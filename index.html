@@ -31,7 +31,7 @@
             }
           },
           animation: {
-            'grid-move': 'gridMove 20s linear infinite',
+            'grid-move': 'gridMove 16s linear infinite',
             'pulse-glow': 'pulseGlow 2s infinite'
           },
           keyframes: {
@@ -95,7 +95,7 @@
       <div class="w-24 h-24 border-4 border-brand-border border-t-brand-gold rounded-full animate-spin"></div>
       <span class="absolute text-xl font-bold tracking-wider text-brand-gold">VTX</span>
     </div>
-    <h1 class="mt-6 text-2xl font-extrabold tracking-widest text-white">VetradeX<span class="text-brand-gold">X</span></h1>
+    <h1 class="mt-6 text-2xl font-extrabold tracking-widest text-white">Vetrade<span class="text-brand-gold">X</span></h1>
     <p class="text-xs text-gray-500 mt-2 tracking-widest uppercase">Connecting to Financial Markets...</p>
   </div>
 
@@ -108,7 +108,7 @@
           <div class="w-9 h-9 bg-brand-gold/10 border border-brand-gold/30 rounded-lg flex items-center justify-center text-brand-gold font-black text-xl shadow-[0_0_15px_rgba(240,185,11,0.2)]">
             V
           </div>
-          <span class="text-xl font-extrabold tracking-wider text-white">Vetradex<span class="text-brand-gold">X</span></span>
+          <span class="text-xl font-extrabold tracking-wider text-white">Vetrade<span class="text-brand-gold">X</span></span>
         </div>
 
         <!-- Desktop Menu -->
@@ -166,7 +166,7 @@
       <!-- 3. Konten Teks Terangkat (3D Parallax Effect) -->
       <div class="relative z-10 flex justify-between items-center">
         <span class="bg-brand-gold/20 text-brand-gold border border-brand-gold/40 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest backdrop-blur-md">
-          PRO TERMINAL TRADER
+          PRO TERMINAL
         </span>
         <div class="w-3 h-3 rounded-full bg-brand-green animate-ping"></div>
       </div>
@@ -187,35 +187,67 @@
   </div>
 </section>
 
-<!-- Script Efek Gerak 3D Interaktif -->
 <script>
-  const container = document.getElementById('card3DContainer');
   const card = document.getElementById('card3D');
-  const glare = document.getElementById('cardGlare');
+  const container = document.getElementById('card3DContainer');
 
-  container.addEventListener('mousemove', (e) => {
-    const rect = container.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    // Hitung Sudut Kemiringan (Tilt)
-    const rotateX = ((y - centerY) / centerY) * -15; // Maksimal miring 15 derajat
-    const rotateY = ((x - centerX) / centerX) * 15;
+  // 1. Efek Mouse untuk Komputer / PC
+  if (container && card) {
+    container.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -15;
+      const rotateY = ((x - centerX) / centerX) * 15;
 
-    // Terapkan Efek 3D Transform
-    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-    
-    // Atur posisi pantulan cahaya (glare)
-    glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.2) 0%, transparent 80%)`;
-  });
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
 
-  // Reset Posisi saat Kursor Keluar
-  container.addEventListener('mouseleave', () => {
-    card.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-  });
+    container.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    });
+  }
+
+  // 2. Efek Gyroskop / Tilt Real-time untuk HP
+  function handleOrientation(event) {
+    // beta = Kemiringan Depan/Belakang (-180 sampai 180)
+    // gamma = Kemiringan Kiri/Kanan (-90 sampai 90)
+    let beta = event.beta; 
+    let gamma = event.gamma;
+
+    if (beta !== null && gamma !== null) {
+      // Batasi sudut maks 20 derajat agar tidak terlalu ekstrem
+      let tiltX = Math.min(Math.max(beta - 45, -20), 20); // Disesuaikan dengan posisi standar pegang HP
+      let tiltY = Math.min(Math.max(gamma, -20), 20);
+
+      // Terapkan animasi kemiringan secara real-time
+      if (card) {
+        card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02)`;
+      }
+    }
+  }
+
+  // Aktifkan Sensor saat Halaman Dibuka
+  if (window.DeviceOrientationEvent) {
+    // Khusus iOS / Safari (Minta Izin Sensor)
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      document.body.addEventListener('click', () => {
+        DeviceOrientationEvent.requestPermission()
+          .then(response => {
+            if (response === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation, true);
+            }
+          })
+          .catch(console.error);
+      }, { once: true });
+    } else {
+      // Android / Chrome (Langsung Jalan Automatis)
+      window.addEventListener('deviceorientation', handleOrientation, true);
+    }
+  }
 </script>
 
     <!-- Live Crypto/Asset Cards Section (Real-time Live Ticker) -->
@@ -228,7 +260,7 @@
       {
         "symbol": "GOLD",
         "width": "100%",
-        "colorTheme": "black",
+        "colorTheme": "dark",
         "isTransparent": true,
         "locale": "id"
       }
@@ -244,7 +276,7 @@
       {
         "symbol": "BITCOIN",
         "width": "100%",
-        "colorTheme": "black",
+        "colorTheme": "dark",
         "isTransparent": true,
         "locale": "id"
       }
@@ -260,7 +292,7 @@
       {
         "symbol": "ETHEREUM",
         "width": "100%",
-        "colorTheme": "black",
+        "colorTheme": "dark",
         "isTransparent": true,
         "locale": "id"
       }
@@ -503,7 +535,7 @@
         <span class="font-bold text-gray-300">VetradeX Platform.
           instagram : 12ifkyyy
           Tiktok : justriffonly | justky</span>
-        <span>© 2026. All rights reserved.</span>
+        <span>© 2026. All rights reserved. sayang novi™</span>
       </div>
       <div class="flex gap-6">
         <a href="#market" class="hover:text-brand-gold transition-colors">Market</a>
