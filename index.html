@@ -119,6 +119,8 @@
           <a href="#rules" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">Trading Rules</a>
           <a href="#journal" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">Journal</a>
           <a href="#education" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">Edukasi</a>
+          <a href="#news" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">News & Kalender</a>
+
         </div>
 
         <!-- Action Button -->
@@ -145,6 +147,8 @@
       <a href="#rules" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">Trading Rules</a>
       <a href="#journal" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">Journal Trade</a>
       <a href="#education" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">Edukasi Komplek</a>
+      <a href="#news" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">News & Kalender</a>
+
     </div>
   </nav>
 
@@ -321,6 +325,43 @@
       <div class="h-[550px] w-full" id="tradingview_widget_container">
         <div id="tradingview_embed" class="h-full w-full"></div>
       </div>
+    </div>
+  </section>
+  <!-- Economic Calendar & News Section -->
+  <section id="news" class="relative z-10 py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl">
+      
+      <!-- Header Section -->
+      <div class="px-6 py-4 border-b border-brand-border flex items-center justify-between bg-brand-dark/50">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-brand-gold/10 flex items-center justify-center text-brand-gold">
+            <i data-lucide="newspaper" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-white">Kalender Ekonomi & Berita Finansial</h2>
+            <p class="text-xs text-gray-400">Jadwal rilis data makroekonomi penting (CPI, NFP, FOMC) real-time.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Container Widget TradingView Economic Calendar -->
+      <div class="p-4 sm:p-6 bg-brand-dark/30">
+        <div class="tradingview-widget-container h-[550px] w-full">
+          <div class="tradingview-widget-container__widget h-full w-full"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+          {
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "width": "100%",
+            "height": "100%",
+            "locale": "id",
+            "importanceFilter": "0,1",
+            "countryFilter": "us,eu,gb,jp,au,ca,ch,cn"
+          }
+          </script>
+        </div>
+      </div>
+
     </div>
   </section>
 
