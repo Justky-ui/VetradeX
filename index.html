@@ -162,68 +162,57 @@
       </p>
     </div>
 
-    <!-- Live Crypto/Asset Cards Section -->
-    <div id="market" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Gold (XAUUSD) -->
-      <div class="bg-brand-card/90 border border-brand-border rounded-xl p-4 hover:border-brand-gold/50 transition-all duration-300 group shadow-lg">
-        <div class="flex justify-between items-start">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-500 group-hover:scale-110 transition-transform">
-              <i data-lucide="coins" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <h3 class="font-bold text-white">Emas / Gold</h3>
-              <span class="text-xs text-gray-400">XAU / USD</span>
-            </div>
-          </div>
-          <span class="bg-brand-green/10 text-brand-green border border-brand-green/20 text-xs px-2 py-0.5 rounded font-mono">+0.84%</span>
-        </div>
-        <div class="mt-4 flex justify-between items-baseline">
-          <span class="text-2xl font-extrabold text-white font-mono tracking-tight">$2,642.50</span>
-          <span class="text-xs text-gray-400">Spot Rate</span>
-        </div>
-      </div>
-
-      <!-- Bitcoin (BTCUSD) -->
-      <div class="bg-brand-card/90 border border-brand-border rounded-xl p-4 hover:border-brand-gold/50 transition-all duration-300 group shadow-lg">
-        <div class="flex justify-between items-start">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:scale-110 transition-transform">
-              <i data-lucide="bitcoin" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <h3 class="font-bold text-white">Bitcoin</h3>
-              <span class="text-xs text-gray-400">BTC / USDT</span>
-            </div>
-          </div>
-          <span class="bg-brand-green/10 text-brand-green border border-brand-green/20 text-xs px-2 py-0.5 rounded font-mono">+2.15%</span>
-        </div>
-        <div class="mt-4 flex justify-between items-baseline">
-          <span class="text-2xl font-extrabold text-white font-mono tracking-tight">$96,820.00</span>
-          <span class="text-xs text-gray-400">Binance</span>
-        </div>
-      </div>
-
-      <!-- Ethereum (ETHUSD) -->
-      <div class="bg-brand-card/90 border border-brand-border rounded-xl p-4 hover:border-brand-gold/50 transition-all duration-300 group shadow-lg">
-        <div class="flex justify-between items-start">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
-              <i data-lucide="activity" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <h3 class="font-bold text-white">Ethereum</h3>
-              <span class="text-xs text-gray-400">ETH / USDT</span>
-            </div>
-          </div>
-          <span class="bg-brand-red/10 text-brand-red border border-brand-red/20 text-xs px-2 py-0.5 rounded font-mono">-0.42%</span>
-        </div>
-        <div class="mt-4 flex justify-between items-baseline">
-          <span class="text-2xl font-extrabold text-white font-mono tracking-tight">$3,580.12</span>
-          <span class="text-xs text-gray-400">Binance</span>
-        </div>
-      </div>
+    <!<!-- Live Crypto/Asset Cards Section (Real-time Live Ticker) -->
+<div id="market" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <!-- Gold (XAUUSD) -->
+  <div class="bg-brand-card/90 border border-brand-border rounded-xl p-2 hover:border-brand-gold/50 transition-all duration-300 shadow-lg overflow-hidden">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+      {
+        "symbol": "OANDA:XAUUSD",
+        "width": "100%",
+        "colorTheme": "dark",
+        "isTransparent": true,
+        "locale": "id"
+      }
+      </script>
     </div>
+  </div>
+
+  <!-- Bitcoin (BTCUSD) -->
+  <div class="bg-brand-card/90 border border-brand-border rounded-xl p-2 hover:border-brand-gold/50 transition-all duration-300 shadow-lg overflow-hidden">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+      {
+        "symbol": "BINANCE:BTCUSDT",
+        "width": "100%",
+        "colorTheme": "dark",
+        "isTransparent": true,
+        "locale": "id"
+      }
+      </script>
+    </div>
+  </div>
+
+  <!-- Ethereum (ETHUSD) -->
+  <div class="bg-brand-card/90 border border-brand-border rounded-xl p-2 hover:border-brand-gold/50 transition-all duration-300 shadow-lg overflow-hidden">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+      {
+        "symbol": "BINANCE:ETHUSDT",
+        "width": "100%",
+        "colorTheme": "dark",
+        "isTransparent": true,
+        "locale": "id"
+      }
+      </script>
+    </div>
+  </div>
+</div>
+
   </section>
 
   <!-- Interactive TradingView Section -->
