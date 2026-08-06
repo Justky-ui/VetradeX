@@ -1,926 +1,1885 @@
 <!DOCTYPE html>
-<html lang="id" class="dark scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VetradeX - Premium Trading Dashboard</title>
-
-  <!-- Tailwind CSS & Lucide Icons -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Google Fonts: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            brand: {
-              black: '#0b0e11',
-              dark: '#12161c',
-              card: '#1e2329',
-              border: '#2b313a',
-              gold: '#f0b90b',
-              accent: '#f0b90b',
-              green: '#0ecb81',
-              red: '#f6465d'
-            }
-          },
-          animation: {
-            'grid-move': 'gridMove 16s linear infinite',
-            'shimmer': 'shimmer 3s infinite'
-          },
-          keyframes: {
-            gridMove: {
-              '0%': { transform: 'translateY(0)' },
-              '100%': { transform: 'translateY(40px)' }
-            },
-            shimmer: {
-              '0%': { transform: 'translateX(-100%)' },
-              '100%': { transform: 'translateX(200%)' }
-            }
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VetradeX - Professional Trading Terminal</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-tertiary: #16161a;
+            --bg-card: #1a1a1f;
+            --bg-hover: #1f1f26;
+            --orange: #f7931a;
+            --orange-bright: #ff9d3c;
+            --orange-glow: rgba(247, 147, 26, 0.25);
+            --orange-subtle: rgba(247, 147, 26, 0.08);
+            --text-primary: #e8e8ec;
+            --text-secondary: #b0b0b8;
+            --text-muted: #6b6b75;
+            --green: #0ecb81;
+            --red: #f6465d;
+            --green-bg: rgba(14, 203, 129, 0.1);
+            --red-bg: rgba(246, 70, 93, 0.1);
+            --border: #2a2a32;
+            --border-light: #33333d;
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 40px var(--orange-glow);
+            --font-mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code', monospace;
+            --transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-      }
-    }
-  </script>
 
-  <style>
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0b0e11; }
-    ::-webkit-scrollbar-thumb { background: #2b313a; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #f0b90b; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Animated Grid Background */
-    .grid-bg {
-      background-size: 40px 40px;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    }
+        html {
+            scroll-behavior: smooth;
+            font-size: 14px;
+        }
 
-    #cursor-glow {
-      pointer-events: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 400px; height: 400px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(240, 185, 11, 0.07) 0%, rgba(0,0,0,0) 70%);
-      transform: translate(-50%, -50%);
-      transition: transform 0.05s ease-out;
-      z-index: 9999;
-    }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: default;
+        }
 
-    /* 3D Carousel Transitions */
-    .carousel-card {
-      transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-    }
-  </style>
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 0%, rgba(247, 147, 26, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(247, 147, 26, 0.02) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 60%, rgba(247, 147, 26, 0.015) 0%, transparent 45%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--orange);
+        }
+
+        /* ===== CAROUSEL SECTION ===== */
+        .carousel-section {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            overflow: hidden;
+            background: #050505;
+            z-index: 1;
+        }
+        .carousel-track {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
+            will-change: transform;
+        }
+        .carousel-slide {
+            position: absolute;
+            width: 55%;
+            max-width: 750px;
+            height: 85%;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: all 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
+            will-change: transform, opacity, filter;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            cursor: grab;
+        }
+        .carousel-slide:active {
+            cursor: grabbing;
+        }
+        .carousel-slide.center {
+            transform: translateX(0) scale(1);
+            z-index: 10;
+            opacity: 1;
+            filter: brightness(1.15) contrast(1.05);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(247, 147, 26, 0.2);
+        }
+        .carousel-slide.left {
+            transform: translateX(-62%) scale(0.78);
+            z-index: 5;
+            opacity: 0.55;
+            filter: brightness(0.5) blur(1.5px);
+        }
+        .carousel-slide.right {
+            transform: translateX(62%) scale(0.78);
+            z-index: 5;
+            opacity: 0.55;
+            filter: brightness(0.5) blur(1.5px);
+        }
+        .carousel-slide.hidden-left {
+            transform: translateX(-110%) scale(0.6);
+            z-index: 1;
+            opacity: 0;
+            filter: brightness(0.3) blur(3px);
+            pointer-events: none;
+        }
+        .carousel-slide.hidden-right {
+            transform: translateX(110%) scale(0.6);
+            z-index: 1;
+            opacity: 0;
+            filter: brightness(0.3) blur(3px);
+            pointer-events: none;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .carousel-slide .slide-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.85) 100%),
+                linear-gradient(0deg, rgba(10, 10, 11, 0.3) 0%, transparent 30%);
+            pointer-events: none;
+        }
+        .carousel-slide .slide-label {
+            position: absolute;
+            bottom: 20px;
+            left: 24px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.03em;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+            z-index: 2;
+            pointer-events: none;
+            background: rgba(247, 147, 26, 0.85);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .carousel-dots {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            border: none;
+        }
+        .carousel-dot.active {
+            background: var(--orange);
+            box-shadow: 0 0 12px var(--orange-glow);
+            width: 28px;
+            border-radius: 20px;
+        }
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background: rgba(26, 26, 31, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            color: #fff;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-arrow:hover {
+            background: var(--orange);
+            border-color: var(--orange);
+            box-shadow: var(--shadow-glow);
+        }
+        .carousel-arrow.left {
+            left: 8%;
+        }
+        .carousel-arrow.right {
+            right: 8%;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(17, 17, 19, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            gap: 16px;
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.35rem;
+            letter-spacing: -0.02em;
+            color: #fff;
+            white-space: nowrap;
+        }
+        .header-logo .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--orange);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.1rem;
+            color: #000;
+            box-shadow: 0 0 20px var(--orange-glow);
+            animation: logoPulse 2.5s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--orange-glow);
+            }
+            50% {
+                box-shadow: 0 0 35px rgba(247, 147, 26, 0.5);
+            }
+        }
+        .header-nav {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .header-nav button {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            letter-spacing: 0.01em;
+        }
+        .header-nav button:hover,
+        .header-nav button.active {
+            color: #fff;
+            background: var(--bg-hover);
+        }
+        .header-nav button.active {
+            color: var(--orange);
+            background: var(--orange-subtle);
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .music-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .music-toggle:hover {
+            border-color: var(--orange);
+            box-shadow: 0 0 16px var(--orange-glow);
+        }
+        .music-toggle.playing {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: #000;
+            animation: musicPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes musicPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 12px var(--orange-glow);
+            }
+            50% {
+                box-shadow: 0 0 28px rgba(247, 147, 26, 0.55);
+            }
+        }
+        .music-toggle .sound-bars {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+            height: 16px;
+        }
+        .music-toggle .sound-bar {
+            width: 3px;
+            background: currentColor;
+            border-radius: 2px;
+            transition: height 80ms ease;
+        }
+        .music-toggle.playing .sound-bar {
+            animation: soundBarAnim 0.6s ease-in-out infinite;
+        }
+        .music-toggle.playing .sound-bar:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .music-toggle.playing .sound-bar:nth-child(2) {
+            animation-delay: 0.12s;
+        }
+        .music-toggle.playing .sound-bar:nth-child(3) {
+            animation-delay: 0.24s;
+        }
+        .music-toggle.playing .sound-bar:nth-child(4) {
+            animation-delay: 0.36s;
+        }
+        @keyframes soundBarAnim {
+            0%,
+            100% {
+                height: 5px;
+            }
+            50% {
+                height: 16px;
+            }
+        }
+
+        /* ===== TICKER STRIP ===== */
+        .ticker-strip {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .ticker-scroll {
+            display: flex;
+            gap: 0;
+            animation: tickerScroll 30s linear infinite;
+            white-space: nowrap;
+            will-change: transform;
+        }
+        .ticker-strip:hover .ticker-scroll {
+            animation-play-state: paused;
+        }
+        @keyframes tickerScroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 20px;
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            color: var(--text-primary);
+            border-right: 1px solid var(--border);
+            height: 38px;
+            flex-shrink: 0;
+        }
+        .ticker-item .ticker-symbol {
+            font-weight: 700;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+        }
+        .ticker-item .ticker-price {
+            font-weight: 600;
+        }
+        .ticker-item .ticker-change {
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        .ticker-item .ticker-change.up {
+            color: var(--green);
+            background: var(--green-bg);
+        }
+        .ticker-item .ticker-change.down {
+            color: var(--red);
+            background: var(--red-bg);
+        }
+
+        /* ===== MAIN LAYOUT ===== */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            grid-template-rows: auto auto auto;
+            gap: 12px;
+            padding: 12px 16px;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        .chart-panel {
+            grid-column: 1;
+            grid-row: 1 / 3;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 520px;
+            box-shadow: var(--shadow-card);
+        }
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .chart-header .pair-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chart-header .pair-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+        .chart-header .pair-price {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--orange);
+        }
+        .chart-header .pair-change {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-weight: 600;
+        }
+        .chart-timeframes {
+            display: flex;
+            gap: 3px;
+        }
+        .chart-timeframes button {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+        .chart-timeframes button:hover {
+            color: #fff;
+            background: var(--bg-hover);
+        }
+        .chart-timeframes button.active {
+            color: var(--orange);
+            background: var(--orange-subtle);
+            border-color: rgba(247, 147, 26, 0.3);
+        }
+        .chart-canvas-wrap {
+            flex: 1;
+            position: relative;
+            cursor: crosshair;
+            min-height: 400px;
+        }
+        .chart-canvas-wrap canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* ===== SIDE PANEL ===== */
+        .side-panel {
+            grid-column: 2;
+            grid-row: 1 / 3;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .side-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: 14px;
+            box-shadow: var(--shadow-card);
+        }
+        .side-card h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .side-card h3 .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--orange);
+            box-shadow: 0 0 8px var(--orange-glow);
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+        @keyframes dotPulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.4;
+            }
+        }
+        .watchlist-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .watchlist-table th {
+            text-align: left;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 6px 4px;
+            border-bottom: 1px solid var(--border);
+        }
+        .watchlist-table td {
+            padding: 7px 4px;
+            border-bottom: 1px solid rgba(42, 42, 50, 0.5);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            transition: background var(--transition-fast);
+        }
+        .watchlist-table tr {
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+        .watchlist-table tr:hover td {
+            background: var(--bg-hover);
+        }
+        .watchlist-table .price-up {
+            color: var(--green);
+        }
+        .watchlist-table .price-down {
+            color: var(--red);
+        }
+
+        /* ===== BOTTOM PANELS ===== */
+        .bottom-panels {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .bottom-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            transition: all var(--transition-smooth);
+        }
+        .bottom-card:hover {
+            border-color: var(--border-light);
+            box-shadow: var(--shadow-card), 0 0 30px rgba(247, 147, 26, 0.04);
+        }
+        .bottom-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .bottom-card h3 .icon {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-sm);
+            background: var(--orange-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        /* News Calendar */
+        .news-list {
+            list-style: none;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .news-item {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(42, 42, 50, 0.5);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border-radius: 6px;
+            padding: 10px;
+        }
+        .news-item:hover {
+            background: var(--bg-hover);
+        }
+        .news-item .news-time {
+            font-size: 0.7rem;
+            color: var(--orange);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+        .news-item .news-title {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin: 3px 0;
+        }
+        .news-item .news-impact {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        .news-item .news-impact.high {
+            background: var(--red-bg);
+            color: var(--red);
+        }
+        .news-item .news-impact.medium {
+            background: rgba(247, 147, 26, 0.15);
+            color: var(--orange);
+        }
+        .news-item .news-impact.low {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+
+        /* Trading Plan */
+        .plan-input {
+            width: 100%;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.85rem;
+            resize: vertical;
+            min-height: 80px;
+            transition: all var(--transition-fast);
+        }
+        .plan-input:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px var(--orange-subtle);
+        }
+        .plan-save-btn {
+            margin-top: 8px;
+            background: var(--orange);
+            color: #000;
+            border: none;
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all var(--transition-smooth);
+            letter-spacing: 0.02em;
+        }
+        .plan-save-btn:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-1px);
+        }
+
+        /* Journal */
+        .journal-entry {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            font-size: 0.82rem;
+            border-left: 3px solid var(--orange);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            position: relative;
+        }
+        .journal-entry:hover {
+            background: var(--bg-hover);
+        }
+        .journal-entry .entry-date {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .journal-entry .delete-entry {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color var(--transition-fast);
+        }
+        .journal-entry .delete-entry:hover {
+            color: var(--red);
+        }
+
+        /* Calculators */
+        .calc-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .calc-row label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            min-width: 60px;
+            font-weight: 500;
+        }
+        .calc-row input {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            transition: all var(--transition-fast);
+            min-width: 0;
+        }
+        .calc-row input:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px var(--orange-subtle);
+        }
+        .calc-result {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--orange);
+            font-size: 1.1rem;
+            margin-top: 6px;
+            padding: 8px 12px;
+            background: var(--orange-subtle);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1100px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            .chart-panel {
+                grid-column: 1;
+                grid-row: auto;
+                min-height: 380px;
+            }
+            .side-panel {
+                grid-column: 1;
+                grid-row: auto;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .side-card {
+                flex: 1;
+                min-width: 250px;
+            }
+            .bottom-panels {
+                grid-template-columns: 1fr 1fr;
+            }
+            .carousel-slide {
+                width: 70%;
+                height: 75%;
+            }
+            .carousel-slide.left {
+                transform: translateX(-55%) scale(0.72);
+            }
+            .carousel-slide.right {
+                transform: translateX(55%) scale(0.72);
+            }
+            .carousel-arrow.left {
+                left: 3%;
+            }
+            .carousel-arrow.right {
+                right: 3%;
+            }
+            .header-nav button {
+                padding: 6px 8px;
+                font-size: 0.75rem;
+            }
+        }
+        @media (max-width: 700px) {
+            .bottom-panels {
+                grid-template-columns: 1fr;
+            }
+            .carousel-section {
+                height: 240px;
+            }
+            .carousel-slide {
+                width: 80%;
+                height: 70%;
+            }
+            .carousel-slide.left {
+                transform: translateX(-48%) scale(0.65);
+            }
+            .carousel-slide.right {
+                transform: translateX(48%) scale(0.65);
+            }
+            .header {
+                padding: 0 10px;
+                height: 48px;
+            }
+            .header-logo {
+                font-size: 1.1rem;
+            }
+            .header-nav {
+                display: none;
+            }
+            .ticker-strip {
+                height: 30px;
+            }
+            .ticker-item {
+                font-size: 0.7rem;
+                padding: 0 10px;
+                height: 30px;
+            }
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            color: #fff;
+            font-weight: 500;
+            z-index: 999;
+            animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), toastOut 0.3s ease 2.5s forwards;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            font-size: 0.85rem;
+        }
+        @keyframes toastIn {
+            from {
+                transform: translateY(60px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+    </style>
 </head>
-<body class="bg-brand-black text-gray-200 font-sans antialiased selection:bg-brand-gold selection:text-black min-h-screen relative overflow-x-hidden">
+<body>
 
-  <!-- Glow Cursor Overlay -->
-  <div id="cursor-glow"></div>
-
-  <!-- Background Music Player -->
-  <audio id="bgMusic" loop preload="auto">
-    <source src="timeless_x_menace_-_The_Weeknd,_Playboi_Carti___Visioner_♪_mashup_♪(256k).mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Tombol Control Musik Melayang -->
-  <button id="musicToggleBtn" class="fixed bottom-6 right-6 z-50 bg-brand-card/90 border border-brand-border text-brand-gold p-3 rounded-full shadow-2xl backdrop-blur-md hover:scale-110 active:scale-95 transition-all flex items-center justify-center group" title="Play/Mute Music">
-    <i data-lucide="volume-x" id="musicIcon" class="w-5 h-5"></i>
-    <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-semibold px-0 group-hover:px-2 text-white">Audio Ambient</span>
-  </button>
-
-  <!-- Background Canvas Particles -->
-  <div class="fixed inset-0 pointer-events-none z-0">
-    <div class="absolute inset-0 grid-bg animate-grid-move"></div>
-    <canvas id="particleCanvas" class="w-full h-full opacity-40"></canvas>
-  </div>
-
-  <!-- Loading Screen -->
-  <div id="loading-screen" class="fixed inset-0 bg-brand-black z-50 flex flex-col items-center justify-center transition-opacity duration-700">
-    <div class="relative flex items-center justify-center">
-      <div class="w-24 h-24 border-4 border-brand-border border-t-brand-gold rounded-full animate-spin"></div>
-      <span class="absolute text-xl font-bold tracking-wider text-brand-gold">VTX</span>
-    </div>
-    <h1 class="mt-6 text-2xl font-extrabold tracking-widest text-white">Vetrade<span class="text-brand-gold">X</span></h1>
-    <p class="text-xs text-gray-500 mt-2 tracking-widest uppercase">Connecting to Financial Markets...</p>
-  </div>
-
-  <!-- Navbar -->
-  <nav class="sticky top-0 z-40 bg-brand-dark/80 backdrop-blur-md border-b border-brand-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        
-        <!-- Brand / Judul Animasi Acak + Cahaya -->
-        <div class="flex items-center space-x-3 cursor-pointer select-none" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-          <div class="w-9 h-9 bg-brand-gold/10 border border-brand-gold/30 rounded-lg flex items-center justify-center text-brand-gold font-black text-xl shadow-[0_0_15px_rgba(240,185,11,0.2)]">
-            V
-          </div>
-          <div class="relative overflow-hidden py-1">
-            <span id="scrambleText" class="text-xl font-extrabold tracking-wider text-white font-mono">VetradeX</span>
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-brand-gold/50 to-transparent w-full h-full -translate-x-full animate-shimmer pointer-events-none"></div>
-          </div>
-        </div>
-
-        <!-- Desktop Menu -->
-        <div class="hidden md:flex items-center space-x-1">
-          <a href="#market" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">Market</a>
-          <a href="#chart" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">Chart</a>
-          <a href="#news" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">News & Kalender</a>
-          <a href="#calculator" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">Kalkulator Risk</a>
-          <a href="#mt5" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">MT5 Sync</a>
-          <a href="#journal" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">Journal</a>
-          <a href="#education" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card transition-all">Edukasi</a>
-        </div>
-
-        <!-- Action Button -->
-        <div class="hidden md:flex items-center space-x-3">
-          <a href="#journal" class="bg-brand-gold text-black font-semibold text-xs px-4 py-2.5 rounded-lg hover:bg-yellow-400 transition-all shadow-lg shadow-brand-gold/20 flex items-center gap-2">
-            <i data-lucide="plus-circle" class="w-4 h-4"></i> Catat Trade
-          </a>
-        </div>
-
-        <!-- Mobile Menu Button -->
-        <div class="md:hidden flex items-center">
-          <button id="mobile-menu-btn" class="text-gray-400 hover:text-white focus:outline-none p-2">
-            <i data-lucide="menu" class="w-6 h-6"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mobile Navigation Drawer -->
-    <div id="mobile-menu" class="hidden md:hidden bg-brand-dark border-b border-brand-border px-4 pt-2 pb-4 space-y-2">
-      <a href="#market" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">Market Live</a>
-      <a href="#chart" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">Chart TradingView</a>
-      <a href="#news" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">News & Kalender</a>
-      <a href="#calculator" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">Kalkulator Risk</a>
-      <a href="#mt5" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">MetaTrader 5 Sync</a>
-      <a href="#journal" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">Journal Trade</a>
-      <a href="#education" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-gold hover:bg-brand-card">Edukasi Komplek</a>
-    </div>
-  </nav>
-
-  <!-- HERO 3D CAROUSEL SECTION -->
-  <section class="relative z-10 py-10 mb-12 max-w-7xl mx-auto px-4 overflow-hidden">
-    <div class="relative w-full h-[450px] sm:h-[500px] flex items-center justify-center">
-      <div id="carouselContainer" class="relative w-full h-full flex items-center justify-center">
-        
-        <div class="carousel-card absolute w-[260px] sm:w-[320px] aspect-[3/4] rounded-3xl overflow-hidden border border-brand-border bg-brand-card shadow-2xl cursor-pointer">
-          <img src="Vetradexx.png" alt="Slide 1" class="w-full h-full object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/40 to-transparent p-6 flex flex-col justify-end">
-            <span class="text-[10px] bg-brand-gold/20 text-brand-gold px-2 py-0.5 rounded w-max mb-2 font-bold uppercase">Terminal Executive</span>
-            <h3 class="text-lg font-bold text-white">Ekosistem VetradeX</h3>
-          </div>
-        </div>
-
-        <div class="carousel-card absolute w-[260px] sm:w-[320px] aspect-[3/4] rounded-3xl overflow-hidden border border-brand-border bg-brand-card shadow-2xl cursor-pointer">
-          <img src="VTX1.png" alt="Slide 2" class="w-full h-full object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/40 to-transparent p-6 flex flex-col justify-end">
-            <span class="text-[10px] bg-brand-green/20 text-brand-green px-2 py-0.5 rounded w-max mb-2 font-bold uppercase">Smart Risk Manager</span>
-            <h3 class="text-lg font-bold text-white">Strategi</h3>
-          </div>
-        </div>
-
-        <div class="carousel-card absolute w-[260px] sm:w-[320px] aspect-[3/4] rounded-3xl overflow-hidden border border-brand-border bg-brand-card shadow-2xl cursor-pointer">
-          <img src="VTRX1.png" alt="Slide 3" class="w-full h-full object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/40 to-transparent p-6 flex flex-col justify-end">
-            <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded w-max mb-2 font-bold uppercase">Institutional Analysis</span>
-            <h3 class="text-lg font-bold text-white">Market reminder</h3>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Live Market Cards -->
-  <div id="market" class="relative z-20 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-    <div class="bg-brand-card/90 border border-brand-border rounded-xl p-2 hover:border-brand-gold/50 transition-all duration-300 shadow-lg overflow-hidden">
-      <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-        { "symbol": "OANDA:XAUUSD", "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "id" }
-        </script>
-      </div>
-    </div>
-
-    <div class="bg-brand-card/90 border border-brand-border rounded-xl p-2 hover:border-brand-gold/50 transition-all duration-300 shadow-lg overflow-hidden">
-      <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-        { "symbol": "BINANCE:BTCUSDT", "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "id" }
-        </script>
-      </div>
-    </div>
-
-    <div class="bg-brand-card/90 border border-brand-border rounded-xl p-2 hover:border-brand-gold/50 transition-all duration-300 shadow-lg overflow-hidden">
-      <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-        { "symbol": "BINANCE:ETHUSDT", "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "id" }
-        </script>
-      </div>
-    </div>
-  </div>
-
-  <!-- Interactive TradingView Section -->
-  <section id="chart" class="relative z-10 py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-2xl">
-      <div class="px-6 py-4 border-b border-brand-border flex flex-wrap items-center justify-between gap-4 bg-brand-dark/50">
-        <div class="flex items-center gap-3">
-          <i data-lucide="candlestick-chart" class="w-5 h-5 text-brand-gold"></i>
-          <h2 class="font-bold text-white text-lg">Interactive Charting Engine</h2>
-        </div>
-        <div class="flex gap-2">
-          <button onclick="changeChartSymbol('OANDA:XAUUSD')" class="px-3 py-1 bg-brand-dark border border-brand-border text-xs text-gray-300 rounded-md hover:border-brand-gold transition-all">Gold</button>
-          <button onclick="changeChartSymbol('BINANCE:BTCUSDT')" class="px-3 py-1 bg-brand-dark border border-brand-border text-xs text-gray-300 rounded-md hover:border-brand-gold transition-all">BTC/USDT</button>
-          <button onclick="changeChartSymbol('BINANCE:ETHUSDT')" class="px-3 py-1 bg-brand-dark border border-brand-border text-xs text-gray-300 rounded-md hover:border-brand-gold transition-all">ETH/USDT</button>
-        </div>
-      </div>
-
-      <div class="h-[550px] w-full" id="tradingview_widget_container">
-        <div id="tradingview_embed" class="h-full w-full"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- News Section -->
-  <section id="news" class="relative z-10 py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl">
-      <div class="px-6 py-4 border-b border-brand-border flex items-center justify-between bg-brand-dark/50">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-brand-gold/10 flex items-center justify-center text-brand-gold">
-            <i data-lucide="newspaper" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h2 class="text-lg font-bold text-white">Kalender Ekonomi & Berita Finansial</h2>
-            <p class="text-xs text-gray-400">Jadwal rilis data makro ekonomi (CPI, NFP, FOMC) real-time.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-4 sm:p-6 bg-brand-dark/30">
-        <div class="tradingview-widget-container h-[550px] w-full">
-          <div class="tradingview-widget-container__widget h-full w-full"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-          {
-            "colorTheme": "dark",
-            "isTransparent": true,
-            "width": "100%",
-            "height": "100%",
-            "locale": "id",
-            "importanceFilter": "0,1",
-            "countryFilter": "us,eu,gb,jp,au,ca,ch,cn"
-          }
-          </script>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Kalkulator Risk Section -->
-  <section id="calculator" class="relative z-10 py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <div class="lg:col-span-5 bg-brand-card border border-brand-border rounded-2xl p-6 shadow-xl">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="w-8 h-8 rounded-lg bg-brand-gold/10 flex items-center justify-center text-brand-gold">
-            <i data-lucide="calculator" class="w-5 h-5"></i>
-          </div>
-          <h2 class="text-xl font-bold text-white">Kalkulator Posisi & Resiko</h2>
-        </div>
-
-        <form id="riskForm" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Total Modal ($)</label>
-            <input type="number" id="balance" value="1000" class="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand-gold font-mono">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Resiko Per Trade (%)</label>
-            <input type="number" id="riskPercent" step="0.1" value="1" class="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand-gold font-mono">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Jarak Stop Loss (Pips / Points)</label>
-            <input type="number" id="stopLossPips" value="30" class="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand-gold font-mono">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Pair / Aset</label>
-            <select id="assetType" class="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand-gold">
-              <option value="forex">Forex Standard (1 Lot = 100k units, $10/pip)</option>
-              <option value="gold" selected>XAUUSD / Gold (1 Lot = 100 oz)</option>
-              <option value="crypto">Crypto / Custom BTC (1 Lot = 1 Unit)</option>
-            </select>
-          </div>
-        </form>
-      </div>
-
-      <div class="lg:col-span-7 bg-brand-card border border-brand-border rounded-2xl p-6 shadow-xl flex flex-col justify-between">
-        <div>
-          <h3 class="text-sm font-semibold uppercase text-gray-400 tracking-wider mb-4">Estimasi & Manajemen Ukuran Lot</h3>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div class="bg-brand-dark border border-brand-border p-4 rounded-xl">
-              <span class="text-xs text-gray-400 block mb-1">Maksimal Toleransi Resiko</span>
-              <span id="calcRiskAmount" class="text-2xl font-bold text-brand-red font-mono">$10.00</span>
+    <!-- ===== CAROUSEL ===== -->
+    <section class="carousel-section" id="carouselSection">
+        <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-slide hidden-left" data-index="0">
+                <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%);display:flex;align-items:center;justify-content:center;position:relative;">
+                    <svg width="200" height="120" viewBox="0 0 200 120" style="opacity:0.6;"><rect x="10" y="20" width="15" height="60" rx="2" fill="#f7931a" opacity="0.8"/><rect x="30" y="40" width="15" height="40" rx="2" fill="#f7931a" opacity="0.6"/><rect x="50" y="10" width="15" height="70" rx="2" fill="#0ecb81" opacity="0.8"/><rect x="70" y="30" width="15" height="50" rx="2" fill="#0ecb81" opacity="0.6"/><rect x="90" y="25" width="15" height="55" rx="2" fill="#f7931a" opacity="0.7"/><rect x="110" y="15" width="15" height="65" rx="2" fill="#0ecb81" opacity="0.9"/><rect x="130" y="35" width="15" height="45" rx="2" fill="#f7931a" opacity="0.5"/><polyline points="17,30 37,50 57,20 77,40 97,35 117,25 137,45" fill="none" stroke="#f7931a" stroke-width="2.5" opacity="0.9"/></svg>
+                </div>
+                <div class="slide-overlay"></div>
+                <div class="slide-label">📊 Market Structure</div>
             </div>
-            <div class="bg-brand-dark border border-brand-border p-4 rounded-xl">
-              <span class="text-xs text-gray-400 block mb-1">Rekomendasi Size (Lot)</span>
-              <span id="calcLotSize" class="text-2xl font-bold text-brand-gold font-mono">0.03</span>
+            <div class="carousel-slide left" data-index="1">
+                <div style="width:100%;height:100%;background:linear-gradient(135deg,#0d0d0d 0%,#1a1a1a 50%,#2d1f0e 100%);display:flex;align-items:center;justify-content:center;position:relative;">
+                    <svg width="220" height="130" viewBox="0 0 220 130" style="opacity:0.7;"><circle cx="40" cy="65" r="30" fill="none" stroke="#f7931a" stroke-width="3" opacity="0.7"/><circle cx="40" cy="65" r="18" fill="#f7931a" opacity="0.2"/><line x1="70" y1="65" x2="180" y2="65" stroke="#f7931a" stroke-width="1.5" opacity="0.5"/><rect x="80" y="20" width="12" height="40" rx="2" fill="#0ecb81" opacity="0.7"/><rect x="96" y="35" width="12" height="25" rx="2" fill="#f6465d" opacity="0.6"/><rect x="112" y="15" width="12" height="45" rx="2" fill="#0ecb81" opacity="0.8"/><rect x="128" y="28" width="12" height="32" rx="2" fill="#0ecb81" opacity="0.65"/><rect x="144" y="10" width="12" height="50" rx="2" fill="#f6465d" opacity="0.7"/><rect x="160" y="22" width="12" height="38" rx="2" fill="#0ecb81" opacity="0.75"/></svg>
+                </div>
+                <div class="slide-overlay"></div>
+                <div class="slide-label">📈 Teknikal Analisis</div>
             </div>
-            <div class="bg-brand-dark border border-brand-border p-4 rounded-xl">
-              <span class="text-xs text-gray-400 block mb-1">Est. Profit (1:2 RRR)</span>
-              <span id="calcRewardAmount" class="text-2xl font-bold text-brand-green font-mono">$20.00</span>
+            <div class="carousel-slide center" data-index="2">
+                <div style="width:100%;height:100%;background:linear-gradient(135deg,#0a0a0a 0%,#1a1008 30%,#1a1a1a 60%,#0a0a0a 100%);display:flex;align-items:center;justify-content:center;position:relative;">
+                    <svg width="260" height="150" viewBox="0 0 260 150" style="opacity:0.85;"><defs><linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f7931a" stop-opacity="0.3"/><stop offset="100%" stop-color="#f7931a" stop-opacity="0"/></linearGradient></defs><rect x="5" y="10" width="250" height="120" fill="url(#grad1)" rx="8"/><polyline points="15,90 40,75 65,55 90,60 115,35 140,45 165,20 190,30 215,15 240,25" fill="none" stroke="#f7931a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="215" cy="15" r="4" fill="#f7931a"/><text x="220" y="19" fill="#f7931a" font-size="10" font-weight="700">$68,450</text><line x1="15" y1="110" x2="245" y2="110" stroke="#333" stroke-width="1"/><line x1="15" y1="10" x2="15" y2="110" stroke="#333" stroke-width="1"/></svg>
+                </div>
+                <div class="slide-overlay"></div>
+                <div class="slide-label">🔥 BTC/USDT Live</div>
             </div>
-          </div>
-
-          <div class="bg-brand-dark/50 border border-brand-border/60 p-4 rounded-xl text-xs text-gray-400 space-y-2">
-            <div class="flex justify-between">
-              <span>Sisa Modal Jika Loss:</span>
-              <span id="calcRemBalance" class="font-mono text-white">$990.00</span>
+            <div class="carousel-slide right" data-index="3">
+                <div style="width:100%;height:100%;background:linear-gradient(135deg,#0d1117 0%,#161b22 50%,#0d1117 100%);display:flex;align-items:center;justify-content:center;position:relative;">
+                    <svg width="200" height="120" viewBox="0 0 200 120" style="opacity:0.6;"><rect x="15" y="30" width="20" height="50" rx="3" fill="#f7931a" opacity="0.7"/><rect x="40" y="20" width="20" height="60" rx="3" fill="#f7931a" opacity="0.5"/><rect x="65" y="45" width="20" height="35" rx="3" fill="#0ecb81" opacity="0.6"/><rect x="90" y="15" width="20" height="65" rx="3" fill="#0ecb81" opacity="0.8"/><rect x="115" y="35" width="20" height="45" rx="3" fill="#f7931a" opacity="0.55"/><rect x="140" y="25" width="20" height="55" rx="3" fill="#0ecb81" opacity="0.7"/><rect x="165" y="40" width="20" height="40" rx="3" fill="#f7931a" opacity="0.5"/></svg>
+                </div>
+                <div class="slide-overlay"></div>
+                <div class="slide-label">📰 Fundamental News</div>
             </div>
-          </div>
+            <div class="carousel-slide hidden-right" data-index="4">
+                <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a 0%,#2a1a0a 50%,#1a1a1a 100%);display:flex;align-items:center;justify-content:center;position:relative;">
+                    <svg width="180" height="110" viewBox="0 0 180 110" style="opacity:0.5;"><circle cx="50" cy="55" r="30" fill="none" stroke="#f7931a" stroke-width="2" opacity="0.5"/><circle cx="90" cy="55" r="20" fill="#f7931a" opacity="0.15"/><circle cx="130" cy="55" r="10" fill="#f7931a" opacity="0.3"/><line x1="50" y1="55" x2="130" y2="55" stroke="#f7931a" stroke-width="1" opacity="0.4"/></svg>
+                </div>
+                <div class="slide-overlay"></div>
+                <div class="slide-label">🌐 Global Markets</div>
+            </div>
         </div>
+        <button class="carousel-arrow left" id="carouselPrev">◂</button>
+        <button class="carousel-arrow right" id="carouselNext">▸</button>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </section>
 
-        <div class="mt-6 p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-xl flex items-start gap-3 text-xs text-yellow-200">
-          <i data-lucide="shield-alert" class="w-5 h-5 text-brand-gold shrink-0 mt-0.5"></i>
-          <span><strong>Trading Golden Rule:</strong> Jangan pernah meresikokan lebih dari 1-2% total ekuitas akun Anda dalam satu transaksi tunggal untuk menjaga kestabilan psikologi.</span>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="header-logo">
+            <div class="logo-icon">V</div>
+            <span>Vetrade<span style="color:var(--orange);">X</span></span>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- METATRADER 5 (MT5) SYNC SECTION -->
-  <section id="mt5" class="relative z-10 py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-gradient-to-r from-brand-card via-brand-dark to-brand-card border border-brand-gold/30 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-      <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div class="space-y-3 max-w-2xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/10 border border-brand-gold/30 rounded-full text-brand-gold text-xs font-bold uppercase tracking-wider">
-            <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Sync Real-Time Account
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Sambungkan Akun MetaTrader 5 (MT5)</h2>
-          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
-            Pantau statistik performa, Win Rate, Drawdown, serta auto-sync log transaksi secara otomatis langsung dari server broker MT5 Anda.
-          </p>
-        </div>
-
-        <div class="w-full md:w-auto flex flex-col sm:flex-row gap-3">
-          <button onclick="alert('Layanan Webhook Sync MT5 dapat dihubungkan via API Investor Key Broker / Myfxbook Widget.')" class="bg-brand-gold text-black font-bold text-xs px-6 py-3.5 rounded-xl hover:bg-yellow-400 transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-gold/20">
-            <i data-lucide="link-2" class="w-4 h-4"></i> Connect MT5 Account
-          </button>
-          <a href="https://www.metatrader5.com/" target="_blank" class="bg-brand-dark border border-brand-border text-gray-300 font-semibold text-xs px-6 py-3.5 rounded-xl hover:border-brand-gold hover:text-white transition-all flex items-center justify-center gap-2">
-            <i data-lucide="download" class="w-4 h-4"></i> Download MT5
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Trading Rules Section -->
-  <section id="rules" class="relative z-10 py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="mb-6">
-      <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-        <i data-lucide="file-text" class="text-brand-gold"></i> Strict Trading Rules & Discipline
-      </h2>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-brand-card border border-brand-border p-5 rounded-xl">
-        <div class="w-8 h-8 rounded-full bg-brand-gold/10 text-brand-gold flex items-center justify-center font-bold text-sm mb-3">1</div>
-        <h3 class="font-bold text-white mb-2">Selalu Gunakan Stop Loss</h3>
-        <p class="text-xs text-gray-400">Jangan pernah membuka posisi tanpa batas kerugian terpasang.</p>
-      </div>
-
-      <div class="bg-brand-card border border-brand-border p-5 rounded-xl">
-        <div class="w-8 h-8 rounded-full bg-brand-gold/10 text-brand-gold flex items-center justify-center font-bold text-sm mb-3">2</div>
-        <h3 class="font-bold text-white mb-2">Minimum Risk Reward 1:2</h3>
-        <p class="text-xs text-gray-400">Pastikan potensi profit dua kali lipat lebih besar dari resiko.</p>
-      </div>
-
-      <div class="bg-brand-card border border-brand-border p-5 rounded-xl">
-        <div class="w-8 h-8 rounded-full bg-brand-gold/10 text-brand-gold flex items-center justify-center font-bold text-sm mb-3">3</div>
-        <h3 class="font-bold text-white mb-2">Hindari FOMO & Overtrade</h3>
-        <p class="text-xs text-gray-400">Jika setup harian belum valid, tetap menunggu dalam disiplin.</p>
-      </div>
-
-      <div class="bg-brand-card border border-brand-border p-5 rounded-xl">
-        <div class="w-8 h-8 rounded-full bg-brand-gold/10 text-brand-gold flex items-center justify-center font-bold text-sm mb-3">4</div>
-        <h3 class="font-bold text-white mb-2">Evaluasi Journal Harian</h3>
-        <p class="text-xs text-gray-400">Catat alasan entry, tingkat emosi, dan perbaiki kesalahan.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Trading Journal Section -->
-  <section id="journal" class="relative z-10 py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 shadow-xl">
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <div>
-          <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-            <i data-lucide="book-open" class="text-brand-gold"></i> Personal Trading Journal
-          </h2>
-          <p class="text-xs text-gray-400">Data tersimpan otomatis secara privat di browser Anda.</p>
-        </div>
-        <button id="openJournalModal" class="bg-brand-gold text-black font-semibold text-xs px-4 py-2.5 rounded-lg hover:bg-yellow-400 transition-all flex items-center gap-2">
-          <i data-lucide="plus" class="w-4 h-4"></i> Tambah Log Baru
-        </button>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-brand-dark text-gray-400 uppercase tracking-wider border-b border-brand-border">
-            <tr>
-              <th class="py-3 px-4">Tanggal</th>
-              <th class="py-3 px-4">Pair</th>
-              <th class="py-3 px-4">Tipe</th>
-              <th class="py-3 px-4">Lot</th>
-              <th class="py-3 px-4">Entry</th>
-              <th class="py-3 px-4">Exit</th>
-              <th class="py-3 px-4">P&L ($)</th>
-              <th class="py-3 px-4">Catatan</th>
-              <th class="py-3 px-4 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="journalTableBody" class="divide-y divide-brand-border/40 text-gray-300 font-mono">
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- Education Section -->
-  <section id="education" class="relative z-10 py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="mb-6">
-      <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-        <i data-lucide="graduation-cap" class="text-brand-gold"></i> VetradeX Academy
-      </h2>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-brand-card border border-brand-border rounded-xl p-5 flex flex-col justify-between">
-        <div>
-          <span class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded font-bold uppercase">Level 1</span>
-          <h3 class="text-lg font-bold text-white mt-3 mb-2">Anatomi Candlestick & Market Structure</h3>
-          <p class="text-xs text-gray-400 leading-relaxed">Higher High, Higher Low, Break of Structure (BOS), serta Liquidity Sweep.</p>
-        </div>
-        <button onclick="alert('Modul ini dapat dipelajari secara mendalam melalui video kurikulum komunitatif VetradeX.')" class="mt-4 w-full py-2 bg-brand-dark border border-brand-border rounded-lg text-xs text-gray-300 font-semibold hover:text-brand-gold transition-all">
-          Baca Modul
-        </button>
-      </div>
-
-      <div class="bg-brand-card border border-brand-border rounded-xl p-5 flex flex-col justify-between">
-        <div>
-          <span class="text-[10px] bg-brand-gold/10 text-brand-gold border border-brand-gold/20 px-2 py-0.5 rounded font-bold uppercase">Level 2</span>
-          <h3 class="text-lg font-bold text-white mt-3 mb-2">Smart Money Concepts (SMC)</h3>
-          <p class="text-xs text-gray-400 leading-relaxed">Identifikasi Order Block (OB), Fair Value Gap (FVG), dan jejak institusi besar.</p>
-        </div>
-        <button onclick="alert('Modul SMC tersedia di direktori belajar.')" class="mt-4 w-full py-2 bg-brand-dark border border-brand-border rounded-lg text-xs text-gray-300 font-semibold hover:text-brand-gold transition-all">
-          Baca Modul
-        </button>
-      </div>
-
-      <div class="bg-brand-card border border-brand-border rounded-xl p-5 flex flex-col justify-between">
-        <div>
-          <span class="text-[10px] bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded font-bold uppercase">Level 3</span>
-          <h3 class="text-lg font-bold text-white mt-3 mb-2">Psikologi Eksekusi & Bias Emosional</h3>
-          <p class="text-xs text-gray-400 leading-relaxed">Mengatasi greed, FOMO, revenge trading, dan melatih kesabaran seorang sniper.</p>
-        </div>
-        <button onclick="alert('lagi proses 😁.')" class="mt-4 w-full py-2 bg-brand-dark border border-brand-border rounded-lg text-xs text-gray-300 font-semibold hover:text-brand-gold transition-all">
-          Baca Modul
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER & RISK DISCLAIMER -->
-  <footer class="relative z-10 bg-brand-dark border-t border-brand-border mt-16 pt-10 pb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-      
-      <!-- Top Row: Brand & Social Media Links -->
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-brand-border/60">
-        <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 bg-brand-gold/10 border border-brand-gold/30 rounded-lg flex items-center justify-center text-brand-gold font-bold">V</div>
-          <span class="font-extrabold text-lg text-white">Vetrade<span class="text-brand-gold">X</span></span>
-        </div>
-
-        <!-- Social Media Badge -->
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          <!-- Instagram -->
-          <a href="https://instagram.com/12ifkyyy" target="_blank" class="flex items-center gap-2 bg-brand-card border border-brand-border px-3.5 py-2 rounded-xl text-xs font-medium text-gray-300 hover:text-pink-400 hover:border-pink-500/50 transition-all">
-            <i data-lucide="instagram" class="w-4 h-4 text-pink-500"></i>
-            <span>@12ifkyyy</span>
-          </a>
-
-          <!-- TikTok 1 -->
-          <a href="https://tiktok.com/@justriffonly" target="_blank" class="flex items-center gap-2 bg-brand-card border border-brand-border px-3.5 py-2 rounded-xl text-xs font-medium text-gray-300 hover:text-cyan-400 hover:border-cyan-500/50 transition-all">
-            <i data-lucide="video" class="w-4 h-4 text-cyan-400"></i>
-            <span>@justriffonly</span>
-          </a>
-
-          <!-- TikTok 2 -->
-          <a href="https://tiktok.com/@justkyonly" target="_blank" class="flex items-center gap-2 bg-brand-card border border-brand-border px-3.5 py-2 rounded-xl text-xs font-medium text-gray-300 hover:text-cyan-400 hover:border-cyan-500/50 transition-all">
-            <i data-lucide="video" class="w-4 h-4 text-cyan-400"></i>
-            <span>@justkyonly</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Bottom Row: Official Risk Disclaimer Statement -->
-      <div class="bg-brand-card/40 border border-brand-border/50 rounded-xl p-5 text-[11px] text-gray-500 space-y-2 leading-relaxed">
-        <p class="font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-          <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-brand-gold"></i> High Risk Investment Warning & Disclaimer
-        </p>
-        <p>
-          Perdagangan valuta asing (Forex), komoditas (Gold), indeks, serta Cryptocurrency dengan menggunakan sistem leverage memiliki tingkat risiko kerugian yang tinggi dan tidak cocok untuk semua investor. Tingkat leverage yang tinggi dapat bekerja menguntungkan Anda maupun merugikan Anda secara signifikan. Sebelum memutuskan untuk bertransaksi di pasar finansial, Anda harus mempertimbangkan tujuan investasi, tingkat pengalaman, dan toleransi risiko secara bijak.
-        </p>
-        <p>
-          Platform <strong>VetradeX</strong> bertindak semata-mata sebagai alat bantu analisis teknikal, jurnal trading mandiri, dan penyedia data pasar harian. Segala bentuk analisa, sinyal, atau materi edukasi yang disajikan bukan merupakan rekomendasi penasihat keuangan resmi. Seluruh keputusan eksekusi posisi dan risiko finansial berada sepenuhnya di bawah tanggung jawab pribadi pengguna.
-        </p>
-      </div>
-
-      <div class="text-center text-xs text-gray-600">
-        © 2026 VetradeX Terminal. Designed for Institutional & Professional Traders. powered by justky vetradex X novi
-      </div>
-
-    </div>
-  </footer>
-
-  <!-- Modal Form Journal -->
-  <div id="journalModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-brand-card border border-brand-border rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold text-white">Catat Posisi Trading</h3>
-        <button id="closeJournalModal" class="text-gray-400 hover:text-white">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <form id="journalForm" class="space-y-3">
-        <div>
-          <label class="block text-xs text-gray-400 mb-1">Pair / Aset</label>
-          <input type="text" id="jPair" placeholder="Contoh: XAUUSD" required class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-gold">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs text-gray-400 mb-1">Tipe Posisi</label>
-            <select id="jType" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-gold">
-              <option value="BUY">BUY / LONG</option>
-              <option value="SELL">SELL / SHORT</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs text-gray-400 mb-1">Lot Size</label>
-            <input type="number" id="jLot" step="0.01" value="0.10" required class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-gold font-mono">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs text-gray-400 mb-1">Harga Entry</label>
-            <input type="number" id="jEntry" step="any" placeholder="2640.50" required class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-gold font-mono">
-          </div>
-          <div>
-            <label class="block text-xs text-gray-400 mb-1">Harga Exit</label>
-            <input type="number" id="jExit" step="any" placeholder="2650.00" required class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-gold font-mono">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs text-gray-400 mb-1">P&L ($ Net Profit/Loss)</label>
-          <input type="number" id="jPnl" step="any" placeholder="100" required class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-gold font-mono">
-        </div>
-
-        <div>
-          <label class="block text-xs text-gray-400 mb-1">Catatan</label>
-          <textarea id="jNotes" rows="2" placeholder="SMC setup..." class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-gold"></textarea>
-        </div>
-
-        <button type="submit" class="w-full bg-brand-gold text-black font-bold text-xs py-2.5 rounded-lg hover:bg-yellow-400 transition-all mt-4">
-          Simpan ke Jurnal
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="https://s3.tradingview.com/tv.js"></script>
-  <script>
-    // Loading Screen
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('loading-screen');
-      setTimeout(() => {
-        loader.style.opacity = '0';
-        setTimeout(() => loader.style.display = 'none', 700);
-      }, 800);
-    });
-
-    lucide.createIcons();
-
-    // Audio Controller
-    const music = document.getElementById('bgMusic');
-    const musicBtn = document.getElementById('musicToggleBtn');
-    const musicIcon = document.getElementById('musicIcon');
-    let isPlaying = false;
-
-    musicBtn.addEventListener('click', () => {
-      if (!isPlaying) {
-        music.play();
-        musicIcon.setAttribute('data-lucide', 'volume-2');
-        musicBtn.classList.add('border-brand-gold', 'animate-pulse');
-        isPlaying = true;
-      } else {
-        music.pause();
-        musicIcon.setAttribute('data-lucide', 'volume-x');
-        musicBtn.classList.remove('border-brand-gold', 'animate-pulse');
-        isPlaying = false;
-      }
-      lucide.createIcons();
-    });
-
-    // Scramble Text
-    const el = document.getElementById('scrambleText');
-    const targetText = 'VetradeX';
-    const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-    function scrambleText() {
-      let iteration = 0;
-      const interval = setInterval(() => {
-        el.innerText = targetText
-          .split('')
-          .map((letter, index) => {
-            if (index < iteration) return targetText[index];
-            return chars[Math.floor(Math.random() * chars.length)];
-          })
-          .join('');
-
-        if (iteration >= targetText.length) clearInterval(interval);
-        iteration += 1 / 3;
-      }, 40);
-    }
-    scrambleText();
-    setInterval(scrambleText, 7000);
-
-    // 3D Carousel
-    const cards = document.querySelectorAll('.carousel-card');
-    let currentIndex = 0;
-
-    function updateCarousel() {
-      cards.forEach((card, i) => {
-        let offset = i - currentIndex;
-        if (offset < -1) offset += cards.length;
-        if (offset > 1) offset -= cards.length;
-
-        if (offset === 0) {
-          card.style.transform = 'translateX(0) scale(1)';
-          card.style.opacity = '1';
-          card.style.zIndex = '30';
-          card.style.filter = 'none';
-        } else if (offset === 1 || offset === -2) {
-          card.style.transform = 'translateX(65%) scale(0.8) rotateY(-15deg)';
-          card.style.opacity = '0.5';
-          card.style.zIndex = '10';
-          card.style.filter = 'blur(1px)';
-        } else {
-          card.style.transform = 'translateX(-65%) scale(0.8) rotateY(15deg)';
-          card.style.opacity = '0.5';
-          card.style.zIndex = '10';
-          card.style.filter = 'blur(1px)';
-        }
-      });
-    }
-
-    function nextSlide() {
-      currentIndex = (currentIndex + 1) % cards.length;
-      updateCarousel();
-    }
-    updateCarousel();
-    setInterval(nextSlide, 4000);
-
-    cards.forEach((card, idx) => {
-      card.addEventListener('click', () => {
-        currentIndex = idx;
-        updateCarousel();
-      });
-    });
-
-    // Mouse Glow Effect
-    const cursorGlow = document.getElementById('cursor-glow');
-    document.addEventListener('mousemove', (e) => {
-      cursorGlow.style.left = e.clientX + 'px';
-      cursorGlow.style.top = e.clientY + 'px';
-    });
-
-    // Mobile Menu
-    const mobileBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-    document.querySelectorAll('.mobile-link').forEach(link => {
-      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
-    });
-
-    // Canvas Particles
-    const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 1.5 + 0.5;
-        this.speedX = (Math.random() - 0.5) * 0.3;
-        this.speedY = (Math.random() - 0.5) * 0.3;
-        this.alpha = Math.random() * 0.5 + 0.2;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0) this.x = canvas.width;
-        if (this.x > canvas.width) this.x = 0;
-        if (this.y < 0) this.y = canvas.height;
-        if (this.y > canvas.height) this.y = 0;
-      }
-      draw() {
-        ctx.fillStyle = `rgba(240, 185, 11, ${this.alpha})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    function initParticles() {
-      particles = [];
-      const count = Math.floor((canvas.width * canvas.height) / 15000);
-      for (let i = 0; i < count; i++) particles.push(new Particle());
-    }
-    initParticles();
-
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
-
-    // TradingView Chart
-    let tvWidget = null;
-    function loadChart(symbol) {
-      document.getElementById('tradingview_embed').innerHTML = '';
-      tvWidget = new TradingView.widget({
-        "autosize": true,
-        "symbol": symbol,
-        "interval": "60",
-        "timezone": "Asia/Jakarta",
-        "theme": "dark",
-        "style": "1",
-        "locale": "id",
-        "toolbar_bg": "#12161c",
-        "enable_publishing": false,
-        "hide_side_toolbar": false,
-        "allow_symbol_change": true,
-        "container_id": "tradingview_embed"
-      });
-    }
-    function changeChartSymbol(symbol) { loadChart(symbol); }
-    loadChart('OANDA:XAUUSD');
-
-    // Risk Calculator Engine
-    const balanceInput = document.getElementById('balance');
-    const riskPercentInput = document.getElementById('riskPercent');
-    const stopLossPipsInput = document.getElementById('stopLossPips');
-    const assetTypeSelect = document.getElementById('assetType');
-
-    function calculateRisk() {
-      const balance = parseFloat(balanceInput.value) || 0;
-      const riskPercent = parseFloat(riskPercentInput.value) || 0;
-      const stopLossPips = parseFloat(stopLossPipsInput.value) || 1;
-      const asset = assetTypeSelect.value;
-
-      const riskAmount = balance * (riskPercent / 100);
-      let lotSize = 0;
-
-      if (asset === 'forex' || asset === 'gold') {
-        lotSize = riskAmount / (stopLossPips * 10);
-      } else {
-        lotSize = riskAmount / stopLossPips;
-      }
-
-      const rewardAmount = riskAmount * 2;
-      const remBalance = balance - riskAmount;
-
-      document.getElementById('calcRiskAmount').innerText = '$' + riskAmount.toFixed(2);
-      document.getElementById('calcLotSize').innerText = Math.max(0.01, lotSize).toFixed(2);
-      document.getElementById('calcRewardAmount').innerText = '$' + rewardAmount.toFixed(2);
-      document.getElementById('calcRemBalance').innerText = '$' + remBalance.toFixed(2);
-    }
-
-    [balanceInput, riskPercentInput, stopLossPipsInput, assetTypeSelect].forEach(el => el.addEventListener('input', calculateRisk));
-    calculateRisk();
-
-    // Trading Journal System
-    const modal = document.getElementById('journalModal');
-    const openModalBtn = document.getElementById('openJournalModal');
-    const closeModalBtn = document.getElementById('closeJournalModal');
-    const journalForm = document.getElementById('journalForm');
-    const journalTableBody = document.getElementById('journalTableBody');
-
-    openModalBtn.addEventListener('click', () => modal.classList.remove('hidden'));
-    closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
-
-    function getStoredJournal() {
-      const data = localStorage.getItem('vetradex_journal');
-      return data ? JSON.parse(data) : [];
-    }
-
-    function saveJournal(data) {
-      localStorage.setItem('vetradex_journal', JSON.stringify(data));
-    }
-
-    function renderJournal() {
-      const journal = getStoredJournal();
-      journalTableBody.innerHTML = '';
-
-      if (journal.length === 0) {
-        journalTableBody.innerHTML = `<tr><td colspan="9" class="py-8 text-center text-gray-500">Belum ada data transaksi.</td></tr>`;
-        return;
-      }
-
-      journal.forEach((item, index) => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-brand-dark/40 transition-colors";
-        
-        const isProfit = parseFloat(item.pnl) >= 0;
-        const pnlClass = isProfit ? "text-brand-green font-bold" : "text-brand-red font-bold";
-        const typeClass = item.type === 'BUY' ? "bg-brand-green/10 text-brand-green border-brand-green/20" : "bg-brand-red/10 text-brand-red border-brand-red/20";
-
-        tr.innerHTML = `
-          <td class="py-3 px-4 text-gray-400">${item.date}</td>
-          <td class="py-3 px-4 font-bold text-white">${item.pair}</td>
-          <td class="py-3 px-4"><span class="px-2 py-0.5 border rounded text-[10px] ${typeClass}">${item.type}</span></td>
-          <td class="py-3 px-4">${item.lot}</td>
-          <td class="py-3 px-4">${item.entry}</td>
-          <td class="py-3 px-4">${item.exit}</td>
-          <td class="py-3 px-4 ${pnlClass}">${isProfit ? '+' : ''}$${parseFloat(item.pnl).toFixed(2)}</td>
-          <td class="py-3 px-4 text-gray-400 max-w-xs truncate">${item.notes || '-'}</td>
-          <td class="py-3 px-4 text-center">
-            <button onclick="deleteJournalItem(${index})" class="text-gray-500 hover:text-brand-red p-1">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
+        <nav class="header-nav" id="headerNav">
+            <button class="active" data-section="chart">Chart</button>
+            <button data-section="news">News</button>
+            <button data-section="plan">Trading Plan</button>
+            <button data-section="journal">Jurnal</button>
+            <button data-section="calc">Kalkulator</button>
+            <button data-section="structure">Struktur Market</button>
+        </nav>
+        <div class="header-actions">
+            <button class="music-toggle" id="musicToggle" title="Music On/Off">
+                <div class="sound-bars">
+                    <div class="sound-bar" style="height:6px;"></div>
+                    <div class="sound-bar" style="height:10px;"></div>
+                    <div class="sound-bar" style="height:14px;"></div>
+                    <div class="sound-bar" style="height:8px;"></div>
+                </div>
             </button>
-          </td>
-        `;
-        journalTableBody.appendChild(tr);
-      });
-      lucide.createIcons();
-    }
+        </div>
+    </header>
 
-    journalForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const newEntry = {
-        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }),
-        pair: document.getElementById('jPair').value.toUpperCase(),
-        type: document.getElementById('jType').value,
-        lot: document.getElementById('jLot').value,
-        entry: document.getElementById('jEntry').value,
-        exit: document.getElementById('jExit').value,
-        pnl: document.getElementById('jPnl').value,
-        notes: document.getElementById('jNotes').value
-      };
+    <!-- ===== TICKER STRIP ===== -->
+    <div class="ticker-strip" id="tickerStrip">
+        <div class="ticker-scroll" id="tickerScroll"></div>
+    </div>
 
-      const journal = getStoredJournal();
-      journal.unshift(newEntry);
-      saveJournal(journal);
-      renderJournal();
-      journalForm.reset();
-      modal.classList.add('hidden');
-    });
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-container">
+        <!-- Chart Panel -->
+        <div class="chart-panel" id="chartPanel">
+            <div class="chart-header">
+                <div class="pair-info">
+                    <span class="pair-name">BTC/USDT</span>
+                    <span class="pair-price" id="mainPrice">68,450.25</span>
+                    <span class="pair-change up" id="mainChange">+2.34%</span>
+                </div>
+                <div class="chart-timeframes" id="chartTimeframes">
+                    <button data-tf="1m">1m</button>
+                    <button data-tf="5m">5m</button>
+                    <button data-tf="15m" class="active">15m</button>
+                    <button data-tf="1h">1H</button>
+                    <button data-tf="4h">4H</button>
+                    <button data-tf="1d">1D</button>
+                </div>
+            </div>
+            <div class="chart-canvas-wrap" id="chartCanvasWrap">
+                <canvas id="mainChartCanvas"></canvas>
+            </div>
+        </div>
 
-    window.deleteJournalItem = function(index) {
-      if(confirm('Hapus catatan trading ini?')) {
-        const journal = getStoredJournal();
-        journal.splice(index, 1);
-        saveJournal(journal);
-        renderJournal();
-      }
-    };
+        <!-- Side Panel -->
+        <div class="side-panel">
+            <div class="side-card">
+                <h3><span class="dot"></span>Market Watch</h3>
+                <table class="watchlist-table">
+                    <thead><tr><th>Pair</th><th>Price</th><th>24h</th></tr></thead>
+                    <tbody id="watchlistBody"></tbody>
+                </table>
+            </div>
+            <div class="side-card" style="flex:1;overflow-y:auto;max-height:250px;">
+                <h3><span class="dot"></span>Order Book Preview</h3>
+                <div id="orderBookPreview" style="font-family:var(--font-mono);font-size:0.75rem;"></div>
+            </div>
+        </div>
 
-    renderJournal();
-  </script>
+        <!-- Bottom Panels -->
+        <div class="bottom-panels">
+            <!-- News Calendar -->
+            <div class="bottom-card" id="newsPanel">
+                <h3><span class="icon">📅</span>Kalender News Financial</h3>
+                <ul class="news-list" id="newsList"></ul>
+            </div>
+            <!-- Trading Plan -->
+            <div class="bottom-card" id="planPanel">
+                <h3><span class="icon">📝</span>Trading Plan Hari Ini</h3>
+                <textarea class="plan-input" id="planInput" placeholder="Tulis trading plan Anda...&#10;&#10;Pair:&#10;Bias: Bullish / Bearish / Sideways&#10;Entry Area:&#10;Target:&#10;Stop Loss:&#10;Risk per Trade:"></textarea>
+                <button class="plan-save-btn" id="planSaveBtn">💾 Simpan Plan</button>
+            </div>
+            <!-- Journal -->
+            <div class="bottom-card" id="journalPanel">
+                <h3><span class="icon">📖</span>Jurnal Trading</h3>
+                <div style="display:flex;gap:6px;margin-bottom:8px;">
+                    <input type="text" id="journalInput" placeholder="Entry baru..." style="flex:1;background:var(--bg-tertiary);border:1px solid var(--border);color:#fff;padding:8px 10px;border-radius:6px;font-size:0.82rem;">
+                    <button id="journalAddBtn" style="background:var(--orange);color:#000;border:none;padding:8px 14px;border-radius:6px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add</button>
+                </div>
+                <div id="journalEntries" style="max-height:200px;overflow-y:auto;"></div>
+            </div>
+        </div>
+
+        <!-- Calculator Panels -->
+        <div class="bottom-panels" style="grid-column:1/-1;">
+            <!-- Money Management -->
+            <div class="bottom-card" id="calcPanel">
+                <h3><span class="icon">💰</span>Kalkulator Money Management</h3>
+                <div class="calc-row"><label>Balance ($)</label><input type="number" id="mmBalance" value="10000" step="100"></div>
+                <div class="calc-row"><label>Risk (%)</label><input type="number" id="mmRisk" value="1" step="0.1" min="0.1" max="100"></div>
+                <div class="calc-row"><label>Entry ($)</label><input type="number" id="mmEntry" value="68450" step="1"></div>
+                <div class="calc-row"><label>Stop Loss ($)</label><input type="number" id="mmSL" value="67800" step="1"></div>
+                <div class="calc-result" id="mmResult">Posisi Size: 0.00 BTC | Risk: $0.00</div>
+            </div>
+            <!-- Risk Reward -->
+            <div class="bottom-card">
+                <h3><span class="icon">🎯</span>Kalkulator Risk / Reward</h3>
+                <div class="calc-row"><label>Entry ($)</label><input type="number" id="rrEntry" value="68450" step="1"></div>
+                <div class="calc-row"><label>Stop Loss ($)</label><input type="number" id="rrSL" value="67800" step="1"></div>
+                <div class="calc-row"><label>Take Profit ($)</label><input type="number" id="rrTP" value="69800" step="1"></div>
+                <div class="calc-result" id="rrResult">Risk: $0 | Reward: $0 | R:R = 0</div>
+            </div>
+            <!-- Market Structure -->
+            <div class="bottom-card" id="structurePanel">
+                <h3><span class="icon">🏗️</span>Struktur Market (Teknikal)</h3>
+                <div id="structureInfo" style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;">
+                    <p>📊 <b style="color:#fff;">Trend:</b> <span style="color:var(--green);">Bullish</span> (Higher Highs)</p>
+                    <p>🔑 <b style="color:#fff;">Support:</b> $67,800 | $66,200</p>
+                    <p>🔒 <b style="color:#fff;">Resistance:</b> $69,000 | $70,500</p>
+                    <p>📈 <b style="color:#fff;">MA50:</b> Above price — bullish signal</p>
+                    <p>📉 <b style="color:#fff;">RSI:</b> 62 — Netral bullish</p>
+                    <p>💡 <b style="color:#fff;">Bias:</b> Lanjutkan long selama di atas $67,800</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ===== CONSTANTS =====
+            const ORANGE = '#f7931a';
+            const ORANGE_GLOW = 'rgba(247,147,26,0.25)';
+            const GREEN = '#0ecb81';
+            const RED = '#f6465d';
+            const BG_CARD = '#1a1a1f';
+            const BG_TERTIARY = '#16161a';
+            const BORDER = '#2a2a32';
+            const TEXT_PRIMARY = '#e8e8ec';
+            const TEXT_SECONDARY = '#b0b0b8';
+
+            // ===== AUDIO ENGINE =====
+            let audioCtx = null;
+            let musicPlaying = false;
+            let masterGain = null;
+            let oscillators = [];
+            let musicInterval = null;
+
+            function initAudio() {
+                if (!audioCtx) {
+                    audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                    masterGain = audioCtx.createGain();
+                    masterGain.gain.value = 0.04;
+                    masterGain.connect(audioCtx.destination);
+                }
+            }
+
+            function startMusic() {
+                initAudio();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                musicPlaying = true;
+                const now = audioCtx.currentTime;
+                const notes = [130.81, 146.83, 164.81, 174.61, 196.00, 220.00, 246.94, 261.63];
+                let noteIndex = 0;
+                oscillators.forEach(o => { try { o.stop(); } catch (e) {} });
+                oscillators = [];
+
+                function playNote() {
+                    if (!musicPlaying) return;
+                    const freq = notes[noteIndex % notes.length];
+                    const osc = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    g.gain.value = 0;
+                    g.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime + 0.08);
+                    g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 1.2);
+                    osc.connect(g);
+                    g.connect(masterGain);
+                    osc.start(audioCtx.currentTime);
+                    osc.stop(audioCtx.currentTime + 1.4);
+                    oscillators.push(osc);
+                    noteIndex++;
+                }
+                playNote();
+                musicInterval = setInterval(playNote, 1400);
+                document.getElementById('musicToggle').classList.add('playing');
+            }
+
+            function stopMusic() {
+                musicPlaying = false;
+                if (musicInterval) clearInterval(musicInterval);
+                oscillators.forEach(o => { try { o.stop(); } catch (e) {} });
+                oscillators = [];
+                document.getElementById('musicToggle').classList.remove('playing');
+            }
+
+            document.getElementById('musicToggle').addEventListener('click', () => {
+                if (musicPlaying) stopMusic();
+                else startMusic();
+            });
+
+            // ===== CAROUSEL =====
+            const carouselTrack = document.getElementById('carouselTrack');
+            const carouselDots = document.getElementById('carouselDots');
+            const slides = carouselTrack.querySelectorAll('.carousel-slide');
+            const totalSlides = slides.length;
+            let currentSlide = 2; // center slide index
+            let autoSlideInterval;
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragOffset = 0;
+
+            const positions = ['hidden-left', 'left', 'center', 'right', 'hidden-right'];
+
+            function updateCarousel(animate = true) {
+                if (!animate) carouselTrack.style.transition = 'none';
+                else carouselTrack.style.transition = 'transform 500ms cubic-bezier(0.25,0.1,0.25,1)';
+
+                slides.forEach((slide, i) => {
+                    slide.className = 'carousel-slide';
+                    let offset = i - currentSlide;
+                    if (offset < -2) offset += totalSlides;
+                    if (offset > 2) offset -= totalSlides;
+                    const posIndex = offset + 2;
+                    if (posIndex >= 0 && posIndex < positions.length) {
+                        slide.classList.add(positions[posIndex]);
+                    } else if (offset < -2) slide.classList.add('hidden-left');
+                    else slide.classList.add('hidden-right');
+                });
+
+                if (!animate) {
+                    requestAnimationFrame(() => {
+                        carouselTrack.style.transition =
+                            'transform 500ms cubic-bezier(0.25,0.1,0.25,1)';
+                    });
+                }
+
+                updateDots();
+            }
+
+            function updateDots() {
+                carouselDots.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'carousel-dot' + (i === currentSlide ? ' active' : '');
+                    dot.addEventListener('click', () => {
+                        currentSlide = i;
+                        updateCarousel();
+                        resetAutoSlide();
+                    });
+                    carouselDots.appendChild(dot);
+                }
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                updateCarousel();
+            }
+
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                updateCarousel();
+            }
+
+            function resetAutoSlide() {
+                clearInterval(autoSlideInterval);
+                autoSlideInterval = setInterval(nextSlide, 4500);
+            }
+
+            document.getElementById('carouselPrev').addEventListener('click', () => { prevSlide();
+                resetAutoSlide(); });
+            document.getElementById('carouselNext').addEventListener('click', () => { nextSlide();
+                resetAutoSlide(); });
+
+            // Drag support
+            carouselTrack.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                dragStartX = e.clientX;
+                dragOffset = 0;
+                carouselTrack.style.transition = 'none';
+                clearInterval(autoSlideInterval);
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                dragOffset = e.clientX - dragStartX;
+            });
+            window.addEventListener('mouseup', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                carouselTrack.style.transition = 'transform 500ms cubic-bezier(0.25,0.1,0.25,1)';
+                if (dragOffset < -60) nextSlide();
+                else if (dragOffset > 60) prevSlide();
+                updateCarousel();
+                resetAutoSlide();
+                dragOffset = 0;
+            });
+            // Touch support
+            carouselTrack.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                dragStartX = e.touches[0].clientX;
+                dragOffset = 0;
+                carouselTrack.style.transition = 'none';
+                clearInterval(autoSlideInterval);
+            }, { passive: true });
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                dragOffset = e.touches[0].clientX - dragStartX;
+            }, { passive: true });
+            window.addEventListener('touchend', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                carouselTrack.style.transition = 'transform 500ms cubic-bezier(0.25,0.1,0.25,1)';
+                if (dragOffset < -50) nextSlide();
+                else if (dragOffset > 50) prevSlide();
+                updateCarousel();
+                resetAutoSlide();
+                dragOffset = 0;
+            });
+
+            updateCarousel(false);
+            updateDots();
+            resetAutoSlide();
+
+            // ===== MARKET DATA SIMULATION =====
+            const marketData = [
+                { symbol: 'BTC/USDT', price: 68450.25, change: 2.34, high: 69100, low: 67200,
+                volume: 28500 },
+                { symbol: 'ETH/USDT', price: 3720.80, change: -1.22, high: 3810, low: 3680,
+                volume: 142000 },
+                { symbol: 'BNB/USDT', price: 612.30, change: 0.85, high: 620, low: 605, volume: 8900 },
+                { symbol: 'SOL/USDT', price: 178.45, change: 5.67, high: 182, low: 170, volume: 32000 },
+                { symbol: 'XRP/USDT', price: 0.6230, change: -0.45, high: 0.64, low: 0.61, volume: 98000 },
+                { symbol: 'ADA/USDT', price: 0.4520, change: 1.88, high: 0.46, low: 0.44, volume: 45000 },
+                { symbol: 'AVAX/USDT', price: 38.90, change: -2.10, high: 40.2, low: 38.5, volume: 12000 },
+                { symbol: 'DOGE/USDT', price: 0.0825, change: 3.45, high: 0.084, low: 0.079, volume: 210000 },
+            ];
+
+            function updateMarketData() {
+                marketData.forEach(m => {
+                    const volatility = m.price * 0.0008;
+                    const change = (Math.random() - 0.48) * volatility;
+                    m.price = Math.max(0.0001, m.price + change);
+                    m.change = ((change / (m.price - change)) * 100);
+                    m.high = Math.max(m.high, m.price);
+                    m.low = Math.min(m.low, m.price);
+                });
+            }
+
+            // Update ticker
+            function updateTicker() {
+                const tickerScroll = document.getElementById('tickerScroll');
+                let html = '';
+                const displayData = [...marketData, ...marketData]; // duplicate for seamless loop
+                displayData.forEach((m, i) => {
+                    const changeClass = m.change >= 0 ? 'up' : 'down';
+                    const changeSign = m.change >= 0 ? '+' : '';
+                    html += `
+                <div class="ticker-item">
+                  <span class="ticker-symbol">${m.symbol}</span>
+                  <span class="ticker-price">$${m.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:4})}</span>
+                  <span class="ticker-change ${changeClass}">${changeSign}${m.change.toFixed(2)}%</span>
+                </div>`;
+                });
+                tickerScroll.innerHTML = html;
+            }
+
+            // Update watchlist
+            function updateWatchlist() {
+                const body = document.getElementById('watchlistBody');
+                body.innerHTML = marketData.map(m => {
+                    const changeClass = m.change >= 0 ? 'price-up' : 'price-down';
+                    const changeSign = m.change >= 0 ? '+' : '';
+                    return `
+                <tr>
+                  <td><b>${m.symbol}</b></td>
+                  <td class="${changeClass}">$${m.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:4})}</td>
+                  <td class="${changeClass}">${changeSign}${m.change.toFixed(2)}%</td>
+                </tr>`;
+                }).join('');
+                // Update main price display
+                const btc = marketData[0];
+                document.getElementById('mainPrice').textContent = '$' + btc.price.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                const mainChange = document.getElementById('mainChange');
+                mainChange.textContent = (btc.change >= 0 ? '+' : '') + btc.change.toFixed(2) + '%';
+                mainChange.className = 'pair-change ' + (btc.change >= 0 ? 'up' : 'down');
+            }
+
+            // Order book preview
+            function updateOrderBook() {
+                const btc = marketData[0];
+                const container = document.getElementById('orderBookPreview');
+                let html = '<div style="color:var(--red);margin-bottom:4px;font-weight:600;">Ask</div>';
+                for (let i = 5; i >= 1; i--) {
+                    const price = btc.price + i * (15 + Math.random() * 20);
+                    const size = (Math.random() * 3 + 0.5).toFixed(3);
+                    html +=
+                        `<div style="display:flex;justify-content:space-between;padding:1px 0;color:var(--red);">$${price.toFixed(2)} <span>${size}</span></div>`;
+                }
+                html +=
+                    `<div style="color:var(--orange);font-weight:700;padding:4px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:4px 0;">$${btc.price.toFixed(2)}</div>`;
+                html += '<div style="color:var(--green);margin-bottom:4px;font-weight:600;">Bid</div>';
+                for (let i = 1; i <= 5; i++) {
+                    const price = btc.price - i * (15 + Math.random() * 20);
+                    const size = (Math.random() * 3 + 0.5).toFixed(3);
+                    html +=
+                        `<div style="display:flex;justify-content:space-between;padding:1px 0;color:var(--green);">$${price.toFixed(2)} <span>${size}</span></div>`;
+                }
+                container.innerHTML = html;
+            }
+
+            // ===== CANVAS CHART =====
+            const chartCanvas = document.getElementById('mainChartCanvas');
+            const chartCtx = chartCanvas.getContext('2d');
+            let chartCandles = [];
+            let chartWidth, chartHeight;
+            const CANDLE_COUNT = 120;
+            let currentTimeframe = '15m';
+            let chartScrollOffset = 0;
+            let crosshairX = -1;
+            let crosshairY = -1;
+
+            function generateCandle(prevClose, volatility) {
+                const open = prevClose + (Math.random() - 0.5) * volatility * 0.5;
+                const range = volatility * (0.5 + Math.random());
+                const close = open + (Math.random() - 0.48) * range;
+                const high = Math.max(open, close) + Math.random() * range * 0.4;
+                const low = Math.min(open, close) - Math.random() * range * 0.4;
+                const volume = Math.random() * 100 + 20;
+                return { open, high, low, close, volume, time: Date.now() };
+            }
+
+            function initChartData() {
+                chartCandles = [];
+                let price = marketData[0].price;
+                const volatility = price * 0.003;
+                for (let i = 0; i < CANDLE_COUNT; i++) {
+                    const candle = generateCandle(price, volatility);
+                    chartCandles.push(candle);
+                    price = candle.close;
+                }
+            }
+
+            function addNewCandle() {
+                if (chartCandles.length === 0) return;
+                const last = chartCandles[chartCandles.length - 1];
+                const volatility = last.close * 0.003;
+                const candle = generateCandle(last.close, volatility);
+                chartCandles.push(candle);
+                if (chartCandles.length > CANDLE_COUNT * 2) {
+                    chartCandles = chartCandles.slice(-CANDLE_COUNT);
+                }
+            }
+
+            function resizeChart() {
+                const wrap = document.getElementById('chartCanvasWrap');
+                const rect = wrap.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                chartWidth = rect.width;
+                chartHeight = rect.height;
+                chartCanvas.width = chartWidth * dpr;
+                chartCanvas.height = chartHeight * dpr;
+                chartCanvas.style.width = chartWidth + 'px';
+                chartCanvas.style.height = chartHeight + 'px';
+                chartCtx.setTransform(1, 0, 0, 1, 0, 0);
+                chartCtx.scale(dpr, dpr);
+            }
+
+            function drawChart() {
+                if (chartCandles.length < 10) return;
+                resizeChart();
+                const ctx = chartCtx;
+                const w = chartWidth;
+                const h = chartHeight;
+                const margin = { top: 30, right: 40, bottom: 40, left: 60 };
+                const plotW = w - margin.left - margin.right;
+                const plotH = h - margin.top - margin.bottom;
+
+                // Clear
+                ctx.fillStyle = BG_CARD;
+                ctx.fillRect(0, 0, w, h);
+
+                const visibleCandles = chartCandles.slice(-CANDLE_COUNT);
+                const allCloses = visibleCandles.map(c => c.close);
+                const allHighs = visibleCandles.map(c => c.high);
+                const allLows = visibleCandles.map(c => c.low);
+                const dataMin = Math.min(...allLows);
+                const dataMax = Math.max(...allHighs);
+                const priceRange = dataMax - dataMin || 1;
+                const padding = priceRange * 0.1;
+                const yMin = dataMin - padding;
+                const yMax = dataMax + padding;
+                const candleWidth = Math.max(2, (plotW / visibleCandles.length) * 0.7);
+                const candleGap = plotW / visibleCandles.length;
+
+                // Grid
+                ctx.strokeStyle = 'rgba(42,42,50,0.5)';
+                ctx.lineWidth = 0.5;
+                const gridLines = 8;
+                for (let i = 0; i <= gridLines; i++) {
+                    const y = margin.top + (plotH / gridLines) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(margin.left, y);
+                    ctx.lineTo(w - margin.right, y);
+                    ctx.stroke();
+                    const price = yMax - ((yMax - yMin) / gridLines) * i;
+                    ctx.fillStyle = TEXT_SECONDARY;
+                    ctx.font = '10px "SF Mono","JetBrains Mono",monospace';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('$' + price.toFixed(2), margin.left - 6, y + 3);
+                }
+                // Vertical grid
+                for (let i = 0; i < visibleCandles.length; i += Math.max(1, Math.floor(
+                    visibleCandles.length / 10))) {
+                    const x = margin.left + candleGap * i + candleGap / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x, margin.top);
+                    ctx.lineTo(x, h - margin.bottom);
+                    ctx.stroke();
+                }
+
+                // MA lines
+                function drawMA(period, color, opacity = 0.7) {
+                    if (visibleCandles.length < period) return;
+                    ctx.strokeStyle = color;
+                    ctx.globalAlpha = opacity;
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([]);
+                    ctx.beginPath();
+                    for (let i = period - 1; i < visibleCandles.length; i++) {
+                        const slice = visibleCandles.slice(i - period + 1, i + 1);
+                        const avg = slice.reduce((s, c) => s + c.close, 0) / period;
+                        const x = margin.left + candleGap * i + candleGap / 2;
+                        const y = margin.top + plotH - ((avg - yMin) / (yMax - yMin)) * plotH;
+                        if (i === period - 1) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                }
+                drawMA(7, '#ff6b6b', 0.6);
+                drawMA(25, '#ffd93d', 0.6);
+                drawMA(50, '#6bcbff', 0.5);
+
+                // Volume bars
+                const maxVol = Math.max(...visibleCandles.map(c => c.volume));
+                const volHeight = plotH * 0.18;
+                const volTop = h - margin.bottom - volHeight;
+                visibleCandles.forEach((c, i) => {
+                    const x = margin.left + candleGap * i + (candleGap - candleWidth) / 2;
+                    const vh = (c.volume / maxVol) * volHeight;
+                    ctx.fillStyle = c.close >= c.open ? 'rgba(14,203,129,0.35)' :
+                        'rgba(246,70,93,0.35)';
+                    ctx.fillRect(x, volTop + volHeight - vh, candleWidth, vh);
+                });
+
+                // Candles
+                visibleCandles.forEach((c, i) => {
+                    const x = margin.left + candleGap * i + (candleGap - candleWidth) / 2;
+                    const openY = margin.top + plotH - ((c.open - yMin) / (yMax - yMin)) * plotH;
+                    const closeY = margin.top + plotH - ((c.close - yMin) / (yMax - yMin)) * plotH;
+                    const highY = margin.top + plotH - ((c.high - yMin) / (yMax - yMin)) * plotH;
+                    const lowY = margin.top + plotH - ((c.low - yMin) / (yMax - yMin)) * plotH;
+                    const isBull = c.close >= c.open;
+                    const bodyTop = Math.min(openY, closeY);
+                    const bodyH = Math.max(1, Math.abs(closeY - openY));
+
+                    ctx.fillStyle = isBull ? GREEN : RED;
+                    ctx.strokeStyle = isBull ? GREEN : RED;
+                    ctx.lineWidth = 1;
+                    // Wick
+                    ctx.beginPath();
+                    ctx.moveTo(x + candleWidth / 2, highY);
+                    ctx.lineTo(x + candleWidth / 2, bodyTop);
+                    ctx.moveTo(x + candleWidth / 2, bodyTop + bodyH);
+                    ctx.lineTo(x + candleWidth / 2, lowY);
+                    ctx.stroke();
+                    // Body
+                    ctx.fillRect(x, bodyTop, candleWidth, bodyH);
+                });
+
+                // Crosshair
+                if (crosshairX >= margin.left && crosshairX <= w - margin.right) {
+                    ctx.strokeStyle = 'rgba(247,147,26,0.5)';
+                    ctx.lineWidth = 0.8;
+                    ctx.setLineDash([4, 4]);
+                    ctx.beginPath();
+                    ctx.moveTo(crosshairX, margin.top);
+                    ctx.lineTo(crosshairX, h - margin.bottom);
+                    ctx.moveTo(margin.left, crosshairY);
+                    ctx.lineTo(w - margin.right, crosshairY);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    const priceAtCross = yMax - ((crosshairY - margin.top) / plotH) * (yMax - yMin);
+                    ctx.fillStyle = ORANGE;
+                    ctx.font = 'bold 11px "SF Mono","JetBrains Mono",monospace';
+                    ctx.textAlign = 'left';
+                    ctx.fillText('$' + priceAtCross.toFixed(2), crosshairX + 8, crosshairY - 8);
+                }
+
+                // Labels
+                ctx.fillStyle = TEXT_SECONDARY;
+                ctx.font = '10px Inter,sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Time →', w / 2, h - 6);
+                ctx.save();
+                ctx.translate(12, h / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText('Price (USDT)', 0, 0);
+                ctx.restore();
+                ctx.fillStyle = ORANGE;
+                ctx.font = 'bold 10px Inter,sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText('MA7', margin.left + 8, margin.top + 14);
+                ctx.fillStyle = '#ffd93d';
+                ctx.fillText('MA25', margin.left + 50, margin.top + 14);
+                ctx.fillStyle = '#6bcbff';
+                ctx.fillText('MA50', margin.left + 100, margin.top + 14);
+            }
+
+            chartCanvas.addEventListener('mousemove', (e) => {
+                const rect = chartCanvas.getBoundingClientRect();
+                crosshairX = e.clientX - rect.left;
+                crosshairY = e.clientY - rect.top;
+            });
+            chartCanvas.addEventListener('mouseleave', () => {
+                crosshairX = -1;
+                crosshairY = -1;
+            });
+
+            document.getElementById('chartTimeframes').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#chartTimeframes button').forEach(b => b
+                        .classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentTimeframe = e.target.dataset.tf;
+                    initChartData();
+                }
+            });
+
+            // ===== NEWS CALENDAR =====
+            const newsEvents = [
+                { time: '08:30 UTC', title: 'US CPI Data (YoY)', impact: 'high', date: '2026-08-12' },
+                { time: '10:00 UTC', title: 'Fed Interest Rate Decision', impact: 'high',
+                date: '2026-08-14' },
+                { time: '12:30 UTC', title: 'US Initial Jobless Claims', impact: 'medium',
+                date: '2026-08-08' },
+                { time: '14:00 UTC', title: 'ECB President Speech', impact: 'high', date: '2026-08-10' },
+                { time: '16:30 UTC', title: 'US GDP Growth Rate Q2', impact: 'high', date: '2026-08-15' },
+                { time: '09:45 UTC', title: 'China PMI Manufacturing', impact: 'medium',
+            date: '2026-08-09' },
+                { time: '18:00 UTC', title: 'FOMC Meeting Minutes', impact: 'medium',
+            date: '2026-08-16' },
+            ];
+
+            function updateNewsList() {
+                const list = document.getElementById('newsList');
+                list.innerHTML = newsEvents.map(n => `
+              <li class="news-item">
+                <div class="news-time">📅 ${n.date} | ${n.time}</div>
+                <div class="news-title">${n.title}</div>
+                <span class="news-impact ${n.impact}">${n.impact.toUpperCase()}</span>
+              </li>`).join('');
+            }
+
+            // ===== TRADING PLAN =====
+            const planInput = document.getElementById('planInput');
+            const planSaveBtn = document.getElementById('planSaveBtn');
+            const savedPlan = localStorage.getItem('vetradex_plan');
+            if (savedPlan) planInput.value = savedPlan;
+            planSaveBtn.addEventListener('click', () => {
+                localStorage.setItem('vetradex_plan', planInput.value);
+                showToast('✅ Trading Plan disimpan!');
+            });
+
+            // ===== JOURNAL =====
+            const journalInput = document.getElementById('journalInput');
+            const journalAddBtn = document.getElementById('journalAddBtn');
+            const journalEntries = document.getElementById('journalEntries');
+            let journalData = JSON.parse(localStorage.getItem('vetradex_journal') || '[]');
+
+            function renderJournal() {
+                journalEntries.innerHTML = journalData.slice().reverse().map((entry, i) => `
+              <div class="journal-entry">
+                <div class="entry-date">${entry.date}</div>
+                <div>${entry.text}</div>
+                <button class="delete-entry" data-idx="${journalData.length - 1 - i}">×</button>
+              </div>`).join('');
+                // Delete handlers
+                journalEntries.querySelectorAll('.delete-entry').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(btn.dataset.idx);
+                        journalData.splice(idx, 1);
+                        localStorage.setItem('vetradex_journal', JSON.stringify(
+                            journalData));
+                        renderJournal();
+                        showToast('🗑️ Entry dihapus');
+                    });
+                });
+            }
+            journalAddBtn.addEventListener('click', () => {
+                const text = journalInput.value.trim();
+                if (!text) return;
+                journalData.push({ text, date: new Date().toLocaleString('id-ID') });
+                localStorage.setItem('vetradex_journal', JSON.stringify(journalData));
+                journalInput.value = '';
+                renderJournal();
+                showToast('📖 Entry jurnal ditambahkan!');
+            });
+            journalInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') journalAddBtn.click();
+            });
+            renderJournal();
+
+            // ===== CALCULATORS =====
+            function updateMMCalc() {
+                const balance = parseFloat(document.getElementById('mmBalance').value) || 0;
+                const riskPct = parseFloat(document.getElementById('mmRisk').value) || 0;
+                const entry = parseFloat(document.getElementById('mmEntry').value) || 0;
+                const sl = parseFloat(document.getElementById('mmSL').value) || 0;
+                const riskAmount = balance * (riskPct / 100);
+                const riskPerUnit = Math.abs(entry - sl);
+                const posSize = riskPerUnit > 0 ? riskAmount / riskPerUnit : 0;
+                document.getElementById('mmResult').textContent =
+                    `Posisi Size: ${posSize.toFixed(4)} BTC | Risk: $${riskAmount.toFixed(2)} | Risk/Unit: $${riskPerUnit.toFixed(2)}`;
+            }
+
+            function updateRRCalc() {
+                const entry = parseFloat(document.getElementById('rrEntry').value) || 0;
+                const sl = parseFloat(document.getElementById('rrSL').value) || 0;
+                const tp = parseFloat(document.getElementById('rrTP').value) || 0;
+                const risk = Math.abs(entry - sl);
+                const reward = Math.abs(tp - entry);
+                const rr = risk > 0 ? (reward / risk) : 0;
+                document.getElementById('rrResult').textContent =
+                    `Risk: $${risk.toFixed(2)} | Reward: $${reward.toFixed(2)} | R:R = 1:${rr.toFixed(2)}`;
+            }
+            ['mmBalance', 'mmRisk', 'mmEntry', 'mmSL'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateMMCalc);
+            });
+            ['rrEntry', 'rrSL', 'rrTP'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateRRCalc);
+            });
+            updateMMCalc();
+            updateRRCalc();
+
+            // ===== TOAST =====
+            function showToast(msg) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = msg;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+
+            // ===== HEADER NAV =====
+            document.getElementById('headerNav').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#headerNav button').forEach(b => b.classList
+                        .remove('active'));
+                    e.target.classList.add('active');
+                    const section = e.target.dataset.section;
+                    const panels = {
+                        chart: 'chartPanel',
+                        news: 'newsPanel',
+                        plan: 'planPanel',
+                        journal: 'journalPanel',
+                        calc: 'calcPanel',
+                        structure: 'structurePanel',
+                    };
+                    const target = document.getElementById(panels[section]);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        target.style.boxShadow = '0 0 0 3px var(--orange-glow)';
+                        setTimeout(() => { target.style.boxShadow = ''; }, 1800);
+                    }
+                }
+            });
+
+            // ===== MAIN LOOP =====
+            let tickCounter = 0;
+            let candleTickCounter = 0;
+
+            function mainLoop() {
+                tickCounter++;
+                if (tickCounter % 3 === 0) {
+                    updateMarketData();
+                    updateTicker();
+                    updateWatchlist();
+                    updateOrderBook();
+                }
+                if (tickCounter % 8 === 0) {
+                    candleTickCounter++;
+                    if (candleTickCounter >= 3) {
+                        addNewCandle();
+                        candleTickCounter = 0;
+                    } else {
+                        // Update last candle
+                        if (chartCandles.length > 0) {
+                            const last = chartCandles[chartCandles.length - 1];
+                            const change = (Math.random() - 0.48) * last.close * 0.001;
+                            last.close += change;
+                            last.high = Math.max(last.high, last.close);
+                            last.low = Math.min(last.low, last.close);
+                        }
+                    }
+                }
+                drawChart();
+                // Update structure info dynamically
+                if (tickCounter % 20 === 0 && chartCandles.length > 50) {
+                    updateStructureInfo();
+                }
+                requestAnimationFrame(mainLoop);
+            }
+
+            function updateStructureInfo() {
+                const closes = chartCandles.slice(-50).map(c => c.close);
+                const ma50 = closes.reduce((s, v) => s + v, 0) / closes.length;
+                const currentPrice = closes[closes.length - 1];
+                const trend = currentPrice > ma50 ? 'Bullish' : 'Bearish';
+                const info = document.getElementById('structureInfo');
+                if (info) {
+                    const trendColor = trend === 'Bullish' ? GREEN : RED;
+                    info.innerHTML = `
+                <p>📊 <b style="color:#fff;">Trend:</b> <span style="color:${trendColor};">${trend}</span> (MA50: $${ma50.toFixed(2)})</p>
+                <p>🔑 <b style="color:#fff;">Support:</b> $${(currentPrice*0.97).toFixed(2)} | $${(currentPrice*0.95).toFixed(2)}</p>
+                <p>🔒 <b style="color:#fff;">Resistance:</b> $${(currentPrice*1.02).toFixed(2)} | $${(currentPrice*1.04).toFixed(2)}</p>
+                <p>📈 <b style="color:#fff;">MA50:</b> ${currentPrice>ma50?'Above price — bullish signal':'Below price — bearish signal'}</p>
+                <p>📉 <b style="color:#fff;">RSI:</b> ${(40+Math.random()*35).toFixed(0)} — ${currentPrice>ma50?'Netral bullish':'Netral bearish'}</p>
+                <p>💡 <b style="color:#fff;">Bias:</b> ${currentPrice>ma50?'Lanjutkan long selama di atas support':'Waspada breakdown, tunggu konfirmasi'}</p>
+              `;
+                }
+            }
+
+            // ===== INIT =====
+            function init() {
+                initChartData();
+                updateTicker();
+                updateWatchlist();
+                updateOrderBook();
+                updateNewsList();
+                updateMMCalc();
+                updateRRCalc();
+                resizeChart();
+                drawChart();
+                updateStructureInfo();
+                requestAnimationFrame(mainLoop);
+            }
+
+            window.addEventListener('resize', () => {
+                resizeChart();
+                drawChart();
+            });
+
+            // Keyboard shortcuts
+            window.addEventListener('keydown', (e) => {
+                switch (e.key.toLowerCase()) {
+                    case 'm':
+                        if (!e.ctrlKey && !e.metaKey && document.activeElement === document.body) {
+                            if (musicPlaying) stopMusic();
+                            else startMusic();
+                        }
+                        break;
+                    case 'arrowleft':
+                        if (!e.ctrlKey && document.activeElement === document.body) { prevSlide();
+                            resetAutoSlide(); }
+                        break;
+                    case 'arrowright':
+                        if (!e.ctrlKey && document.activeElement === document.body) { nextSlide();
+                            resetAutoSlide(); }
+                        break;
+                }
+            });
+
+            init();
+            console.log('%c🚀 VetradeX Terminal Ready %c| %cDark Theme + Orange Accent %c| 120fps Optimized',
+                'color:#f7931a;font-weight:bold;font-size:16px;',
+                '',
+                'color:#f7931a;',
+                '');
+            console.log('%cFeatures: Live Chart | Ticker | News Calendar | Trading Plan | Journal | Money Management | Risk/Reward Calc | Market Structure | Music',
+                'color:#b0b0b8;');
+            console.log('%cPress M for music | Arrow keys for carousel', 'color:#6b6b75;font-style:italic;');
+        })();
+    </script>
 </body>
 </html>
