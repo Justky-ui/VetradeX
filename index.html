@@ -586,6 +586,9 @@
 </head>
 <body>
 
+    <!-- AUDIO PLAYER UNTUK MP3 GITHUB -->
+    <audio id="githubAudio" loop></audio>
+
     <!-- INTRO LOADING SCREEN -->
     <div id="loader-screen">
         <div class="loader-logo">VetradeX</div>
@@ -622,26 +625,26 @@
         <div class="carousel-stage" id="carouselStage">
             <!-- Slide 1: XAUUSD -->
             <div class="carousel-card pos-left">
-                <img src="https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80" alt="Gold Safe Haven">
+                <img id="banner-img-1" src="" alt="Gold Safe Haven">
                 <div class="carousel-overlay">
-                    <h3>XAU/USD Gold Safe Haven</h3>
-                    <p>Pantau momentum pergerakan emas berdasarkan respon suku bunga & geopolitik.</p>
+                    <h3 id="banner-title-1">XAU/USD Gold Safe Haven</h3>
+                    <p id="banner-desc-1">Pantau momentum pergerakan emas berdasarkan respon suku bunga & geopolitik.</p>
                 </div>
             </div>
             <!-- Slide 2: BTCUSD -->
             <div class="carousel-card pos-center">
-                <img src="https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80" alt="Crypto Dominance">
+                <img id="banner-img-2" src="" alt="Crypto Dominance">
                 <div class="carousel-overlay">
-                    <h3>Bitcoin & Crypto Volatility</h3>
-                    <p>Analisis likuiditas tingkat tinggi & struktur market harian Bitcoin real-time.</p>
+                    <h3 id="banner-title-2">Bitcoin & Crypto Volatility</h3>
+                    <p id="banner-desc-2">Analisis likuiditas tingkat tinggi & struktur market harian Bitcoin real-time.</p>
                 </div>
             </div>
             <!-- Slide 3: NASDAQ -->
             <div class="carousel-card pos-right">
-                <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80" alt="US Tech Stocks">
+                <img id="banner-img-3" src="" alt="US Tech Stocks">
                 <div class="carousel-overlay">
-                    <h3>NASDAQ 100 Index</h3>
-                    <p>Pergerakan saham teknologi AS dengan eksekusi teknikal presisi.</p>
+                    <h3 id="banner-title-3">NASDAQ 100 Index</h3>
+                    <p id="banner-desc-3">Pergerakan saham teknologi AS dengan eksekusi teknikal presisi.</p>
                 </div>
             </div>
         </div>
@@ -872,13 +875,59 @@
 
     <!-- COMPLETE JAVASCRIPT ENGINE -->
     <script>
+        /* ==========================================================================
+           KONFIGURASI LINK FOTO & MUSIK GITHUB (GANTI DI SINI)
+           ========================================================================== */
+        const CONFIG = {
+            // Salin URL raw file audio (.mp3) dari GitHub ke sini
+            musicUrl: "https://raw.githubusercontent.com/username/repo-anda/main/musik.mp3",
+            
+            // Salin URL raw image/foto dari GitHub atau Unsplash ke sini
+            banners: [
+                {
+                    img: "https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80",
+                    title: "XAU/USD Gold Safe Haven",
+                    desc: "Pantau momentum pergerakan emas berdasarkan respon suku bunga & geopolitik."
+                },
+                {
+                    img: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80",
+                    title: "Bitcoin & Crypto Volatility",
+                    desc: "Analisis likuiditas tingkat tinggi & struktur market harian Bitcoin real-time."
+                },
+                {
+                    img: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80",
+                    title: "NASDAQ 100 Index",
+                    desc: "Pergerakan saham teknologi AS dengan eksekusi teknikal presisi."
+                }
+            ]
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+            setupDynamicContent();
             runLoaderSequence();
             initTradingViewChart('CAPITALCOM:GOLD');
             initEconomicCalendar();
             loadJournalFromStorage();
         });
+
+        /* MEMASUKKAN FOTO BANNER & MUSIK MP3 SECARA OTOMATIS */
+        function setupDynamicContent() {
+            // Setup Banners
+            for (let i = 0; i < 3; i++) {
+                const imgEl = document.getElementById(`banner-img-${i + 1}`);
+                const titleEl = document.getElementById(`banner-title-${i + 1}`);
+                const descEl = document.getElementById(`banner-desc-${i + 1}`);
+
+                if (imgEl) imgEl.src = CONFIG.banners[i].img;
+                if (titleEl) titleEl.innerText = CONFIG.banners[i].title;
+                if (descEl) descEl.innerText = CONFIG.banners[i].desc;
+            }
+
+            // Setup MP3 Audio Source
+            const audioEl = document.getElementById('githubAudio');
+            if (audioEl) audioEl.src = CONFIG.musicUrl;
+        }
 
         /* 1. LOADER SEQUENCE */
         function runLoaderSequence() {
@@ -909,67 +958,28 @@
             }, 200);
         }
 
-        /* 2. AUDIO SYNTHESIZER */
-        let audioCtx = null;
+        /* 2. GITHUB AUDIO PLAYER ENGINE */
         let isAudioPlaying = false;
-        let audioTimer = null;
-
         const audioBtn = document.getElementById('audioToggleBtn');
         const audioText = document.getElementById('audioText');
+        const bgAudio = document.getElementById('githubAudio');
 
         audioBtn.addEventListener('click', () => {
             if (!isAudioPlaying) {
-                startLofiSynth();
-                audioText.innerText = 'Lofi Sound: ON';
-                audioBtn.classList.add('playing');
-                isAudioPlaying = true;
+                bgAudio.play().then(() => {
+                    audioText.innerText = 'Lofi Sound: ON';
+                    audioBtn.classList.add('playing');
+                    isAudioPlaying = true;
+                }).catch(err => {
+                    alert('Gagal memutar audio. Pastikan URL MP3 di CONFIG.musicUrl valid (Gunakan link RAW dari GitHub).');
+                });
             } else {
-                stopLofiSynth();
+                bgAudio.pause();
                 audioText.innerText = 'Lofi Sound: OFF';
                 audioBtn.classList.remove('playing');
                 isAudioPlaying = false;
             }
         });
-
-        function startLofiSynth() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            const chords = [261.63, 329.63, 392.00, 493.88];
-            
-            function playChordNote() {
-                if (!isAudioPlaying) return;
-                const freq = chords[Math.floor(Math.random() * chords.length)];
-                
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq / 2, audioCtx.currentTime);
-                
-                gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 1.5);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 4);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start();
-                osc.stop(audioCtx.currentTime + 4.1);
-
-                audioTimer = setTimeout(playChordNote, 2500);
-            }
-            playChordNote();
-        }
-
-        function stopLofiSynth() {
-            if (audioTimer) clearTimeout(audioTimer);
-            if (audioCtx) audioCtx.suspend();
-        }
 
         /* 3. 3D CAROUSEL */
         const carouselStage = document.getElementById('carouselStage');
