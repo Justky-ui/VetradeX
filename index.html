@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VetradeX - Institutional Terminal</title>
+  <title>VetradeX - Terminal Executive</title>
 
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Syne (Elegant Headings), Plus Jakarta Sans, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -18,16 +18,20 @@
       theme: {
         extend: {
           fontFamily: { 
-            sans: ['Inter', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            heading: ['Syne', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'] 
           },
           colors: {
             brand: {
-              black: '#000000',
-              gold: '#f0b90b',
-              green: '#0ecb81',
-              red: '#f6465d',
-              blue: '#1d9bf0'
+              black: '#080808',
+              card: 'rgba(18, 18, 18, 0.75)',
+              orange: '#F0B90B',
+              orangeGlow: '#FF9900',
+              cream: '#F4EAE1',
+              creamMuted: '#C5BCB3',
+              red: '#F6465D',
+              green: '#0ECB81'
             }
           }
         }
@@ -37,144 +41,169 @@
 
   <style>
     /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #000000; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #080808; }
     ::-webkit-scrollbar-thumb { background: rgba(240, 185, 11, 0.4); border-radius: 4px; }
 
-    /* Grid Background Dominan Samping */
-    .grid-bg-side {
-      background-size: 32px 32px;
+    /* Animated Grid Canvas & Particle Layer */
+    .grid-bg {
+      background-size: 36px 36px;
       background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-      mask-image: radial-gradient(circle at center, transparent 30%, black 90%);
-      -webkit-mask-image: radial-gradient(circle at center, transparent 30%, black 90%);
+        linear-gradient(to right, rgba(240, 185, 11, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(240, 185, 11, 0.04) 1px, transparent 1px);
+      animation: gridMove 20s linear infinite;
+    }
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 36px 36px; }
     }
 
-    /* Elastic Bounce Effect saat Di-klik */
+    /* Bounce/Elastic Touch Card */
     .bounce-card {
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease, box-shadow 0.3s ease;
     }
     .bounce-card:active {
-      transform: scale(0.92) !important;
+      transform: scale(0.94) !important;
     }
 
-    /* Pure Black Liquid Glass */
-    .liquid-glass-pure {
-      background: rgba(8, 8, 8, 0.75);
-      backdrop-filter: blur(25px) saturate(200%);
-      -webkit-backdrop-filter: blur(25px) saturate(200%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    /* Smooth Pure Glass */
+    .glass-box {
+      background: rgba(12, 12, 12, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(240, 185, 11, 0.15);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+    }
+    .glass-box:hover {
+      border-color: rgba(240, 185, 11, 0.4);
+      box-shadow: 0 0 25px rgba(240, 185, 11, 0.15);
     }
 
-    /* Bottom Overlay Blur */
-    .liquid-bottom-blur {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(30px) saturate(210%);
-      -webkit-backdrop-filter: blur(30px) saturate(210%);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    /* Text Shine Animation */
+    .text-glow-animated {
+      background: linear-gradient(90deg, #F4EAE1, #F0B90B, #FF9900, #F4EAE1);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      animation: shine 4s linear infinite;
+    }
+    @keyframes shine {
+      to { background-position: 200% center; }
     }
 
-    #cursor-glow {
-      pointer-events: none;
+    /* Particle Canvas */
+    #snowCanvas {
       position: fixed;
       top: 0; left: 0;
-      width: 450px; height: 450px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(240, 185, 11, 0.12) 0%, rgba(0,0,0,0) 70%);
-      transform: translate(-50%, -50%);
-      transition: transform 0.05s ease-out;
-      z-index: 9999;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
     }
 
-    /* Slide Page Transitions */
-    .tab-page {
-      display: none;
-      animation: fadeIn 0.4s ease-in-out forwards;
+    /* Coverflow Slide Layout */
+    .coverflow-wrapper {
+      perspective: 1000px;
     }
-    .tab-page.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
+    .slide-3d {
+      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
     }
   </style>
 </head>
-<body class="bg-black text-gray-200 font-sans antialiased selection:bg-brand-gold selection:text-black min-h-screen pb-28 relative overflow-x-hidden">
+<body class="bg-brand-black text-brand-cream font-sans antialiased selection:bg-brand-orange selection:text-black min-h-screen pb-20 relative overflow-x-hidden">
 
-  <!-- Glow Cursor Overlay -->
-  <div id="cursor-glow"></div>
+  <!-- SNOW PARTICLE CANVAS -->
+  <canvas id="snowCanvas"></canvas>
 
-  <!-- Partikel & Grid Dominan di Samping-Samping Layar -->
-  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <!-- Grid khusus tepi luar -->
-    <div class="absolute inset-0 grid-bg-side opacity-80"></div>
-
-    <!-- Light Bubbles / Partikel di Samping Kiri & Kanan -->
-    <div class="absolute top-10 -left-20 w-96 h-96 bg-brand-gold/15 rounded-full blur-[130px]"></div>
-    <div class="absolute top-1/2 -right-20 w-96 h-96 bg-emerald-500/15 rounded-full blur-[140px]"></div>
-    <div class="absolute -bottom-10 left-1/4 w-80 h-80 bg-brand-blue/10 rounded-full blur-[120px]"></div>
+  <!-- AMBIENT GLOW LIGHTS -->
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <div class="absolute inset-0 grid-bg"></div>
+    <div class="absolute -top-20 -left-20 w-96 h-96 bg-brand-orange/10 rounded-full blur-[140px]"></div>
+    <div class="absolute top-1/2 -right-20 w-96 h-96 bg-brand-orangeGlow/10 rounded-full blur-[150px]"></div>
   </div>
 
-  <!-- MUSIC AUDIO PLAYER -->
+  <!-- INTRO LOADING ANIMATION -->
+  <div id="introLoader" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center transition-opacity duration-700">
+    <div class="relative flex flex-col items-center">
+      <div class="w-16 h-16 border-2 border-brand-orange/20 border-t-brand-orange rounded-full animate-spin mb-4"></div>
+      <h1 class="font-heading text-3xl font-extrabold text-glow-animated tracking-widest">VETRADEX</h1>
+      <p class="text-xs font-mono text-brand-creamMuted mt-2 tracking-wider">INITIALIZING TERMINAL...</p>
+    </div>
+  </div>
+
+  <!-- AUDIO PLAYER -->
   <audio id="bgMusic" loop preload="auto">
     <source src="Ariana_Grande_-_Past_Life__Tik_Tok_Version__Lyric_Indo(256k).mp3" type="audio/mpeg">
   </audio>
 
-  <button id="musicToggleBtn" class="bounce-card fixed bottom-24 right-6 z-50 liquid-glass-pure text-brand-gold p-3.5 rounded-full shadow-2xl hover:border-brand-gold flex items-center justify-center group" title="Play/Mute Music">
-    <i data-lucide="volume-x" id="musicIcon" class="w-5 h-5"></i>
-    <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-semibold px-0 group-hover:px-2 text-white">The Weeknd - Late Night Drive</span>
+  <!-- FLOATING MUSIC BUTTON -->
+  <button id="musicToggleBtn" class="bounce-card fixed bottom-6 right-6 z-40 glass-box text-brand-orange p-3.5 rounded-full flex items-center justify-center group shadow-2xl" title="Play / Mute Music">
+    <i data-lucide="disc" id="musicIcon" class="w-5 h-5 animate-spin-slow"></i>
+    <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-semibold px-0 group-hover:px-3 text-brand-cream">Ariana Grande - Past Life</span>
   </button>
 
-  <!-- TOP BAR -->
-  <header class="sticky top-0 z-40 liquid-glass-pure border-b border-white/10 px-4 py-3">
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-40 glass-box border-b border-brand-orange/10 px-4 py-3">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-      <div class="flex items-center space-x-2.5 cursor-pointer bounce-card" onclick="switchTab('terminal')">
-        <div class="w-8 h-8 bg-brand-gold/20 border border-brand-gold/40 rounded-xl flex items-center justify-center text-brand-gold font-black text-lg">V</div>
-        <span class="text-lg font-extrabold text-white font-mono hidden sm:inline">VetradeX</span>
+      <div class="flex items-center space-x-3 cursor-pointer">
+        <div class="w-9 h-9 bg-brand-orange/20 border border-brand-orange/50 rounded-xl flex items-center justify-center text-brand-orange font-black font-heading text-xl shadow-[0_0_15px_rgba(240,185,11,0.3)]">V</div>
+        <span class="text-xl font-black font-heading tracking-wider text-glow-animated">VETRADEX</span>
       </div>
 
-      <!-- Search Bar -->
-      <div class="flex-1 max-w-xl relative">
-        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-        <input type="text" id="searchInput" placeholder="Cari Pair Forex, Crypto (BTC), atau Saham..." class="w-full bg-black/60 border border-white/10 rounded-2xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-brand-gold transition-all">
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-mono px-3 py-1 bg-brand-orange/10 border border-brand-orange/30 text-brand-orange rounded-full flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-brand-green animate-pulse"></span> Terminal Active
+        </span>
       </div>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER WITH TAB SLIDES -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 relative z-10">
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-12 relative z-10">
 
-    <!-- PAGE 1: TERMINAL MAIN -->
-    <div id="tab-terminal" class="tab-page active space-y-8">
+    <!-- HERO HEADER & 3D COVERFLOW POSTER SLIDER (3:4 RATIO) -->
+    <section class="space-y-6 text-center">
+      <div class="space-y-2">
+        <h1 class="text-3xl sm:text-5xl font-extrabold font-heading text-glow-animated tracking-tight">VETRADEX INSTITUTIONAL</h1>
+        <p class="text-xs sm:text-sm font-mono text-brand-creamMuted">Advanced Multi-Asset Market Analytics & Quantitative Trading Suite</p>
+      </div>
 
-      <!-- SLIDER FOTO BERGERAK (FRONT PAGE) -->
-      <section class="bounce-card liquid-glass-pure rounded-3xl p-6 relative overflow-hidden shadow-2xl hover:border-brand-gold/40">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div class="space-y-3 max-w-xl text-center md:text-left">
-            <span class="px-3 py-1 bg-brand-gold/10 border border-brand-gold/30 text-brand-gold rounded-full text-xs font-mono font-bold">Institutional Terminal</span>
-            <h1 class="text-2xl sm:text-3xl font-black text-white">VetradeX Trading Hub</h1>
-            <p class="text-xs text-gray-300 leading-relaxed">Selamat datang di terminal analisis pasar terpadu. Pantau pergerakan harga Gold (XAUUSD), Crypto, dan Saham secara real-time.</p>
-            <p class="text-xs font-semibold text-pink-400 italic">"𝓝𝓸𝓿𝓲𝓮𝓮---"</p>
-          </div>
+      <!-- 3D Slide Container -->
+      <div class="coverflow-wrapper relative max-w-4xl mx-auto h-[380px] sm:h-[420px] flex items-center justify-center overflow-hidden">
+        
+        <!-- Left Slide -->
+        <div id="slide-left" onclick="moveSlide('left')" class="slide-3d absolute w-48 sm:w-56 aspect-[3/4] rounded-2xl overflow-hidden border border-brand-orange/30 shadow-2xl cursor-pointer -translate-x-36 sm:-translate-x-52 scale-90 opacity-60 z-10">
+          <img id="img-left" src="VTRX1.png" onerror="this.src='https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500'" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/40"></div>
+        </div>
 
-          <!-- Carousel Container (3 Foto Bergerak) -->
-          <div class="relative w-full md:w-80 h-48 rounded-2xl overflow-hidden border border-brand-gold/40 shadow-2xl">
-            <img id="carouselImg" src="Vetradexx.png" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500'" class="w-full h-full object-cover transition-all duration-700">
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end p-3">
-              <span id="carouselCaption" class="text-[11px] font-mono text-brand-gold font-bold">Photo 1 / 3 - Vetradexx</span>
-            </div>
+        <!-- Center Active Slide -->
+        <div id="slide-center" class="slide-3d absolute w-56 sm:w-64 aspect-[3/4] rounded-2xl overflow-hidden border-2 border-brand-orange shadow-[0_0_30px_rgba(240,185,11,0.3)] z-20">
+          <img id="img-center" src="Vetradexx.png" onerror="this.src='https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=500'" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end p-3">
+            <span id="center-tag" class="text-xs font-mono font-bold text-brand-orange bg-black/70 px-2 py-1 rounded-md border border-brand-orange/30">Vetradexx Focus</span>
           </div>
         </div>
-      </section>
 
-      <!-- LIVE MARKET CARDS -->
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bounce-card liquid-glass-pure rounded-2xl p-2 hover:border-brand-gold/50">
+        <!-- Right Slide -->
+        <div id="slide-right" onclick="moveSlide('right')" class="slide-3d absolute w-48 sm:w-56 aspect-[3/4] rounded-2xl overflow-hidden border border-brand-orange/30 shadow-2xl cursor-pointer translate-x-36 sm:translate-x-52 scale-90 opacity-60 z-10">
+          <img id="img-right" src="VTX1.png" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500'" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/40"></div>
+        </div>
+
+        <!-- Slide Controls -->
+        <button onclick="prevSlide()" class="bounce-card absolute left-2 z-30 p-2.5 glass-box rounded-full text-brand-orange"><i data-lucide="chevron-left"></i></button>
+        <button onclick="nextSlide()" class="bounce-card absolute right-2 z-30 p-2.5 glass-box rounded-full text-brand-orange"><i data-lucide="chevron-right"></i></button>
+      </div>
+    </section>
+
+    <!-- REAL-TIME MARKET MONITOR -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-2">
+        <i data-lucide="line-chart" class="w-5 h-5 text-brand-orange"></i>
+        <h2 class="text-xl font-bold font-heading text-brand-cream tracking-wide">Live Market Watch</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bounce-card glass-box rounded-2xl p-2">
           <div class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
@@ -182,7 +211,7 @@
             </script>
           </div>
         </div>
-        <div class="bounce-card liquid-glass-pure rounded-2xl p-2 hover:border-brand-gold/50">
+        <div class="bounce-card glass-box rounded-2xl p-2">
           <div class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
@@ -190,258 +219,300 @@
             </script>
           </div>
         </div>
-        <div class="bounce-card liquid-glass-pure rounded-2xl p-2 hover:border-brand-gold/50">
+        <div class="bounce-card glass-box rounded-2xl p-2">
           <div class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-            { "symbol": "NASDAQ:AAPL", "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "id" }
+            { "symbol": "NASDAQ:NVDA", "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "id" }
             </script>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- INTERACTIVE CHARTING -->
-      <section id="chart-section" class="liquid-glass-pure rounded-3xl overflow-hidden shadow-2xl">
-        <div class="px-6 py-4 border-b border-white/10 flex flex-wrap items-center justify-between gap-4 bg-black/40">
-          <div class="flex items-center gap-3">
-            <i data-lucide="candlestick-chart" class="w-5 h-5 text-brand-gold"></i>
-            <h2 class="font-bold text-white text-lg">Pro Charting Engine</h2>
+    <!-- PRO TRADINGVIEW CHART ENGINE -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-2">
+          <i data-lucide="candlestick-chart" class="w-5 h-5 text-brand-orange"></i>
+          <h2 class="text-xl font-bold font-heading text-brand-cream tracking-wide">Pro Charting Engine</h2>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="changeChartSymbol('OANDA:XAUUSD')" class="bounce-card px-3 py-1.5 glass-box text-xs font-mono text-brand-cream rounded-xl hover:text-brand-orange">XAUUSD</button>
+          <button onclick="changeChartSymbol('BINANCE:BTCUSDT')" class="bounce-card px-3 py-1.5 glass-box text-xs font-mono text-brand-cream rounded-xl hover:text-brand-orange">BTCUSDT</button>
+          <button onclick="changeChartSymbol('NASDAQ:AAPL')" class="bounce-card px-3 py-1.5 glass-box text-xs font-mono text-brand-cream rounded-xl hover:text-brand-orange">AAPL</button>
+        </div>
+      </div>
+      <div class="glass-box rounded-3xl overflow-hidden shadow-2xl h-[520px]" id="tradingview_embed"></div>
+    </section>
+
+    <!-- MACRO NEWS CALENDAR -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-2">
+          <i data-lucide="newspaper" class="w-5 h-5 text-brand-orange"></i>
+          <h2 class="text-xl font-bold font-heading text-brand-cream tracking-wide">Economic Calendar & News</h2>
+        </div>
+        <div id="countdownTimer" class="text-xs font-mono text-brand-orange bg-brand-orange/10 border border-brand-orange/20 px-3 py-1 rounded-xl">
+          Next Major Event in: <span id="timerClock" class="font-bold">01:42:10</span>
+        </div>
+      </div>
+      <div class="glass-box rounded-3xl p-6 overflow-x-auto">
+        <table class="w-full text-left text-xs font-mono">
+          <thead class="bg-black/60 text-brand-creamMuted uppercase border-b border-brand-orange/20">
+            <tr>
+              <th class="py-3 px-4">Time</th>
+              <th class="py-3 px-4">Curr</th>
+              <th class="py-3 px-4">Macro Event</th>
+              <th class="py-3 px-4">Impact</th>
+              <th class="py-3 px-4">Before</th>
+              <th class="py-3 px-4">After / Forecast</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 text-brand-cream">
+            <tr class="hover:bg-brand-orange/5 transition-colors">
+              <td class="py-3.5 px-4 text-brand-creamMuted">19:30 WIB</td>
+              <td class="py-3.5 px-4 font-bold text-white">USD</td>
+              <td class="py-3.5 px-4">US Core CPI (MoM)</td>
+              <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-brand-red/20 text-brand-red border border-brand-red/30 rounded text-[10px] font-bold">HIGH</span></td>
+              <td class="py-3.5 px-4">0.3%</td>
+              <td class="py-3.5 px-4 text-brand-orange font-bold">0.2%</td>
+            </tr>
+            <tr class="hover:bg-brand-orange/5 transition-colors">
+              <td class="py-3.5 px-4 text-brand-creamMuted">21:00 WIB</td>
+              <td class="py-3.5 px-4 font-bold text-white">USD</td>
+              <td class="py-3.5 px-4">Non-Farm Payrolls (NFP)</td>
+              <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-brand-red/20 text-brand-red border border-brand-red/30 rounded text-[10px] font-bold">HIGH</span></td>
+              <td class="py-3.5 px-4">142K</td>
+              <td class="py-3.5 px-4 text-brand-orange font-bold">165K</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MONEY MANAGEMENT CALCULATOR -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-2">
+        <i data-lucide="calculator" class="w-5 h-5 text-brand-orange"></i>
+        <h2 class="text-xl font-bold font-heading text-brand-cream tracking-wide">Money Management Calculator</h2>
+      </div>
+      <div class="glass-box rounded-3xl p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="text-[11px] font-mono text-brand-creamMuted block mb-1">Account Balance ($)</label>
+            <input type="number" id="calcBalance" value="1000" class="w-full bg-black/60 border border-brand-orange/20 rounded-xl px-4 py-2.5 text-xs text-brand-cream focus:outline-none focus:border-brand-orange">
           </div>
-          <div class="flex gap-2">
-            <button onclick="changeChartSymbol('OANDA:XAUUSD')" class="bounce-card px-3 py-1 liquid-glass-pure text-xs text-gray-300 rounded-xl hover:border-brand-gold">Gold</button>
-            <button onclick="changeChartSymbol('BINANCE:BTCUSDT')" class="bounce-card px-3 py-1 liquid-glass-pure text-xs text-gray-300 rounded-xl hover:border-brand-gold">BTC</button>
-            <button onclick="changeChartSymbol('NASDAQ:NVDA')" class="bounce-card px-3 py-1 liquid-glass-pure text-xs text-gray-300 rounded-xl hover:border-brand-gold">NVDA</button>
+          <div>
+            <label class="text-[11px] font-mono text-brand-creamMuted block mb-1">Risk per Trade (%)</label>
+            <input type="number" id="calcRisk" value="1" class="w-full bg-black/60 border border-brand-orange/20 rounded-xl px-4 py-2.5 text-xs text-brand-cream focus:outline-none focus:border-brand-orange">
+          </div>
+          <div>
+            <label class="text-[11px] font-mono text-brand-creamMuted block mb-1">Stop Loss (Pips)</label>
+            <input type="number" id="calcSL" value="30" class="w-full bg-black/60 border border-brand-orange/20 rounded-xl px-4 py-2.5 text-xs text-brand-cream focus:outline-none focus:border-brand-orange">
           </div>
         </div>
-        <div class="h-[500px] w-full bg-black" id="tradingview_embed"></div>
-      </section>
+        <div class="p-4 bg-black/50 rounded-2xl border border-brand-orange/10 flex justify-between items-center text-xs font-mono">
+          <span>Recommended Lot Size:</span>
+          <span id="resLot" class="text-base text-brand-orange font-bold">0.03 Lot</span>
+        </div>
+      </div>
+    </section>
 
-      <!-- KALENDER MAKROEKONOMI -->
-      <section class="bounce-card liquid-glass-pure rounded-3xl p-6 shadow-2xl">
-        <div class="mb-6">
-          <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <i data-lucide="newspaper" class="text-brand-gold"></i> Kalender Makro ekonomi Bloomberg Style
-          </h2>
+    <!-- TRADING PLAN & RULES -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-2">
+        <i data-lucide="book-open" class="w-5 h-5 text-brand-orange"></i>
+        <h2 class="text-xl font-bold font-heading text-brand-cream tracking-wide">Institutional Trading Plan</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bounce-card glass-box rounded-3xl p-6 space-y-3">
+          <h3 class="font-bold text-brand-orange text-sm flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4"></i> Golden Rules</h3>
+          <ul class="text-xs space-y-2 text-brand-creamMuted list-disc list-inside">
+            <li>Maksimal risk per entry tidak lebih dari 1-2% total ekuitas.</li>
+            <li>Wajib menunggu konfirmasi HTF Liquidity Sweep & CHoCH di LTF.</li>
+            <li>No Revenge Trading. Maksimal 3 transaksi per hari.</li>
+          </ul>
+        </div>
+        <div class="bounce-card glass-box rounded-3xl p-6 space-y-3">
+          <h3 class="font-bold text-brand-orange text-sm flex items-center gap-2"><i data-lucide="shield-alert" class="w-4 h-4"></i> Risk Protocol</h3>
+          <ul class="text-xs space-y-2 text-brand-creamMuted list-disc list-inside">
+            <li>Cut loss tegas jika setup invalid (Tanpa toleransi SL bergeser).</li>
+            <li>Gunakan Trailing Stop / BEP setelah mencapai R:R 1:2.</li>
+            <li>Hindari hold posisi saat high impact macro news dirilis.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRADING JOURNAL -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-2">
+        <i data-lucide="notebook-pen" class="w-5 h-5 text-brand-orange"></i>
+        <h2 class="text-xl font-bold font-heading text-brand-cream tracking-wide">Journal & Execution Log</h2>
+      </div>
+      <div class="glass-box rounded-3xl p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <input type="text" id="jPair" placeholder="Pair (ex: XAUUSD)" class="bg-black/60 border border-brand-orange/20 rounded-xl px-3 py-2 text-xs text-brand-cream">
+          <select id="jType" class="bg-black/60 border border-brand-orange/20 rounded-xl px-3 py-2 text-xs text-brand-cream">
+            <option value="BUY">BUY</option>
+            <option value="SELL">SELL</option>
+          </select>
+          <input type="text" id="jResult" placeholder="Result (ex: +2.5R / -$10)" class="bg-black/60 border border-brand-orange/20 rounded-xl px-3 py-2 text-xs text-brand-cream">
+          <button onclick="addJournal()" class="bounce-card bg-brand-orange text-black font-bold rounded-xl text-xs py-2 hover:bg-yellow-400">Add Log</button>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-black text-gray-400 uppercase border-b border-white/10">
+            <thead class="bg-black/40 text-brand-creamMuted border-b border-white/10">
               <tr>
-                <th class="py-3 px-4">Waktu</th>
-                <th class="py-3 px-4">Mata Uang</th>
-                <th class="py-3 px-4">Event Makro</th>
-                <th class="py-3 px-4">Impact</th>
-                <th class="py-3 px-4">Previous</th>
-                <th class="py-3 px-4">Forecast</th>
+                <th class="py-2 px-3">Pair</th>
+                <th class="py-2 px-3">Type</th>
+                <th class="py-2 px-3">Result</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-white/5 text-gray-300">
-              <tr class="hover:bg-white/5">
-                <td class="py-3 px-4 text-gray-400">19:30 WIB</td>
-                <td class="py-3 px-4 font-bold text-white">USD</td>
-                <td class="py-3 px-4">US Core CPI (MoM)</td>
-                <td class="py-3 px-4"><span class="px-2 py-0.5 bg-brand-red/20 text-brand-red border border-brand-red/30 rounded-md text-[10px] font-bold">HIGH</span></td>
-                <td class="py-3 px-4">0.3%</td>
-                <td class="py-3 px-4 text-brand-gold">0.2%</td>
-              </tr>
-              <tr class="hover:bg-white/5">
-                <td class="py-3 px-4 text-gray-400">21:00 WIB</td>
-                <td class="py-3 px-4 font-bold text-white">USD</td>
-                <td class="py-3 px-4">Non-Farm Payrolls (NFP)</td>
-                <td class="py-3 px-4"><span class="px-2 py-0.5 bg-brand-red/20 text-brand-red border border-brand-red/30 rounded-md text-[10px] font-bold">HIGH</span></td>
-                <td class="py-3 px-4">142K</td>
-                <td class="py-3 px-4 text-brand-gold">165K</td>
+            <tbody id="journalBody" class="divide-y divide-white/5">
+              <tr>
+                <td class="py-2 px-3 font-bold">XAUUSD</td>
+                <td class="py-2 px-3 text-brand-green">BUY</td>
+                <td class="py-2 px-3 text-brand-green">+3.2R</td>
               </tr>
             </tbody>
           </table>
         </div>
-      </section>
-
-      <!-- RISK CALCULATOR -->
-      <section class="bounce-card liquid-glass-pure rounded-3xl p-6 shadow-2xl">
-        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          <i data-lucide="calculator" class="text-brand-gold"></i> Risk Calculator
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <input type="number" id="balance" value="1000" placeholder="Balance ($)" class="bg-black border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-brand-gold">
-          <input type="number" id="riskPercent" value="1" placeholder="Risk (%)" class="bg-black border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-brand-gold">
-          <input type="number" id="stopLossPips" value="30" placeholder="SL Pips" class="bg-black border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-brand-gold">
-        </div>
-        <div class="mt-4 p-4 bg-black rounded-2xl flex justify-between text-xs font-mono border border-white/5">
-          <span>Recommended Lot Size:</span>
-          <span id="calcLotSize" class="text-brand-gold font-bold">0.03 Lot</span>
-        </div>
-      </section>
-
-      <!-- BROKER PARTNER -->
-      <section class="liquid-glass-pure rounded-3xl p-6 shadow-2xl">
-        <div class="mb-6">
-          <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <i data-lucide="shield-check" class="text-brand-gold"></i> Broker Regulated Partner
-          </h2>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div class="bounce-card bg-black border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-brand-gold/50">
-            <div>
-              <h3 class="font-bold text-white text-base mb-1">Tickmill</h3>
-              <p class="text-[11px] text-gray-400 mb-4">Ultra-low spreads dari 0.0 pips, eksekusi super cepat.</p>
-            </div>
-            <a href="#" target="_blank" class="w-full bg-brand-gold text-black font-bold text-xs py-2.5 rounded-xl text-center hover:bg-yellow-400 transition-all">Buka Akun Tickmill</a>
-          </div>
-
-          <div class="bounce-card bg-black border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-brand-gold/50">
-            <div>
-              <h3 class="font-bold text-white text-base mb-1">HFM (HotForex)</h3>
-              <p class="text-[11px] text-gray-400 mb-4">Leverage hingga 1:2000, beragam pilihan instrumen.</p>
-            </div>
-            <a href="#" target="_blank" class="w-full bg-brand-gold text-black font-bold text-xs py-2.5 rounded-xl text-center hover:bg-yellow-400 transition-all">Buka Akun HFM</a>
-          </div>
-
-          <div class="bounce-card bg-black border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-brand-gold/50">
-            <div>
-              <h3 class="font-bold text-white text-base mb-1">RoboForex</h3>
-              <p class="text-[11px] text-gray-400 mb-4">Layanan CopyFX unggulan, akun ECN terbaik.</p>
-            </div>
-            <a href="#" target="_blank" class="w-full bg-brand-gold text-black font-bold text-xs py-2.5 rounded-xl text-center hover:bg-yellow-400 transition-all">Buka Akun RoboForex</a>
-          </div>
-        </div>
-      </section>
-
-    </div>
-
-    <!-- PAGE 2: PROFIL KHUSUS -->
-    <div id="tab-profile" class="tab-page space-y-8 max-w-3xl mx-auto">
-      <div class="bounce-card liquid-glass-pure rounded-3xl p-8 shadow-2xl relative overflow-hidden hover:border-brand-gold/40">
-        <div class="flex flex-col items-center text-center space-y-4">
-          
-          <div class="relative group cursor-pointer" onclick="document.getElementById('avatarUpload').click()">
-            <img id="profileAvatar" src="Vetradexx.png" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150'" class="w-32 h-32 rounded-3xl object-cover border-4 border-brand-gold/60 shadow-2xl group-hover:opacity-80 transition-opacity">
-            <div class="absolute inset-0 bg-black/50 rounded-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <i data-lucide="camera" class="w-8 h-8 text-white"></i>
-            </div>
-            <input type="file" id="avatarUpload" accept="image/*" class="hidden">
-          </div>
-
-          <div class="space-y-2">
-            <div class="flex items-center justify-center gap-2">
-              <h2 class="text-3xl font-black text-white">Justky</h2>
-              <span class="text-brand-blue" title="Verified Trader">
-                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.79-3.99-4-3.99-.495 0-.965.084-1.4.238C14.55 2.475 13.18 1.6 11.6 1.6c-1.58 0-2.95.875-3.6 2.148-.435-.154-.905-.238-1.4-.238-2.21 0-3.99 1.79-3.99 4 0 .495.084.965.238 1.4C1.575 9.55.7 10.92.7 12.5c0 1.58.875 2.95 2.148 3.6-.154.435-.238.905-.238 1.4 0 2.21 1.79 3.99 4 3.99.495 0 .965-.084 1.4-.238 1.05 1.273 2.42 2.148 4 2.148 1.58 0 2.95-.875 3.6-2.148.435.154.905.238 1.4.238 2.21 0 3.99-1.79 3.99-4 0-.495-.084-.965-.238-1.4 1.273-1.05 2.148-2.42 2.148-4zm-12.71 4.29l-3.58-3.59 1.41-1.41 2.17 2.17 6.18-6.18 1.41 1.41-7.59 7.6z"/></svg>
-              </span>
-            </div>
-
-            <p class="text-sm font-semibold text-pink-400 italic">"𝓝𝓸𝓿𝓲𝓮𝓮---"</p>
-
-            <p class="text-xs text-gray-300 max-w-lg mx-auto">Institutional SMC Trader & Quantitative Market Analyst. Focus on XAUUSD & High Liquidity Assets.</p>
-          </div>
-
-          <!-- Social Links Box -->
-          <div class="w-full bg-black border border-white/10 rounded-2xl p-4 flex flex-col gap-3 font-mono text-xs">
-            <a href="https://instagram.com/12ifkyyy" target="_blank" class="bounce-card flex items-center justify-between hover:text-brand-gold transition-colors p-2 rounded-xl hover:bg-white/5">
-              <div class="flex items-center gap-2">
-                <i data-lucide="instagram" class="w-5 h-5 text-pink-500"></i>
-                <span>Instagram</span>
-              </div>
-              <span class="text-gray-400">@12ifkyyy</span>
-            </a>
-            
-            <div class="border-t border-white/10"></div>
-
-            <div class="flex items-center justify-between p-2">
-              <div class="flex items-center gap-2">
-                <i data-lucide="video" class="w-5 h-5 text-cyan-400"></i>
-                <span>TikTok</span>
-              </div>
-              <span class="text-gray-300 font-bold">justriffonly | justkyonly</span>
-            </div>
-          </div>
-
-        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- DISCLAIMER -->
+    <section class="glass-box rounded-3xl p-6 text-center space-y-2 border-brand-red/20">
+      <h3 class="text-xs font-mono text-brand-red font-bold uppercase tracking-widest flex items-center justify-center gap-1.5"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Risk Disclaimer</h3>
+      <p class="text-[11px] text-brand-creamMuted leading-relaxed max-w-4xl mx-auto">
+        Perdagangan berjangka, Forex, Crypto, dan Komoditas mengandung risiko tinggi dan tidak cocok untuk semua investor. Kinerja masa lalu bukan merupakan indikasi hasil di masa depan. Seluruh data dan tools yang disediakan oleh VetradeX bertindak sebagai media analisis edukatif semata.
+      </p>
+    </section>
 
   </main>
 
-  <!-- NAVIGATION BOTTOM OVERLAY BAR (BLUR EFFECT) -->
-  <div class="fixed bottom-0 left-0 right-0 z-50 liquid-bottom-blur px-4 py-3">
-    <div class="max-w-md mx-auto flex items-center justify-around">
-      
-      <button onclick="switchTab('terminal')" id="nav-terminal" class="bounce-card flex flex-col items-center gap-1 text-brand-gold transition-colors">
-        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-        <span class="text-[10px] font-medium">Terminal</span>
-      </button>
-
-      <button onclick="switchTab('profile')" id="nav-profile" class="bounce-card flex flex-col items-center gap-1 text-gray-400 hover:text-brand-gold transition-colors">
-        <i data-lucide="user" class="w-5 h-5"></i>
-        <span class="text-[10px] font-medium">Profil</span>
-      </button>
-
-    </div>
-  </div>
+  <!-- FOOTER COPYRIGHT -->
+  <footer class="mt-16 border-t border-brand-orange/10 py-6 text-center z-10 relative">
+    <p class="text-xs font-mono text-brand-creamMuted">
+      copyright by <span class="text-brand-orange font-bold">justky vetradex x novi</span>
+    </p>
+  </footer>
 
   <!-- Scripts -->
   <script src="https://s3.tradingview.com/tv.js"></script>
   <script>
     lucide.createIcons();
 
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active'));
-      document.getElementById('tab-' + tabName).classList.add('active');
+    // Remove Loader
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loader = document.getElementById('introLoader');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 700);
+      }, 1000);
+    });
 
-      document.getElementById('nav-terminal').className = 'bounce-card flex flex-col items-center gap-1 text-gray-400 hover:text-brand-gold transition-colors';
-      document.getElementById('nav-profile').className = 'bounce-card flex flex-col items-center gap-1 text-gray-400 hover:text-brand-gold transition-colors';
-      
-      document.getElementById('nav-' + tabName).className = 'bounce-card flex flex-col items-center gap-1 text-brand-gold transition-colors';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // SNOW / PARTICLE CANVAS
+    const canvas = document.getElementById('snowCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = Array.from({ length: 45 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 2 + 0.5,
+      d: Math.random() * 1 + 0.2,
+      opacity: Math.random() * 0.5 + 0.2
+    }));
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = 'rgba(244, 234, 225, 0.6)';
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        p.y += p.d;
+        p.x += Math.sin(p.y * 0.01) * 0.3;
+        if (p.y > height) { p.y = -5; p.x = Math.random() * width; }
+      });
+      requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+
+    // 3D SLIDER LOGIC
+    const sliderData = [
+      { src: 'Vetradexx.png', tag: 'Vetradexx Focus' },
+      { src: 'VTRX1.png', tag: 'VTRX1 Analytical' },
+      { src: 'VTX1.png', tag: 'VTX1 Execution' }
+    ];
+    let currentIndex = 0;
+
+    function updateSlider() {
+      const leftIdx = (currentIndex + sliderData.length - 1) % sliderData.length;
+      const rightIdx = (currentIndex + 1) % sliderData.length;
+
+      document.getElementById('img-left').src = sliderData[leftIdx].src;
+      document.getElementById('img-center').src = sliderData[currentIndex].src;
+      document.getElementById('img-right').src = sliderData[rightIdx].src;
+      document.getElementById('center-tag').innerText = sliderData[currentIndex].tag;
     }
 
-    // Carousel Foto Bergerak
-    const photos = [
-      { src: 'Vetradexx.png', caption: 'Photo 1 / 3 - Vetradexx' },
-      { src: 'VTRX1.png', caption: 'Photo 2 / 3 - VTRX1' },
-      { src: 'VTX1.png', caption: 'Photo 3 / 3 - VTX1' }
-    ];
-    let photoIndex = 0;
-    const carouselImg = document.getElementById('carouselImg');
-    const carouselCaption = document.getElementById('carouselCaption');
+    function nextSlide() { currentIndex = (currentIndex + 1) % sliderData.length; updateSlider(); }
+    function prevSlide() { currentIndex = (currentIndex - 1 + sliderData.length) % sliderData.length; updateSlider(); }
+    function moveSlide(dir) { if(dir === 'left') prevSlide(); else nextSlide(); }
 
-    setInterval(() => {
-      photoIndex = (photoIndex + 1) % photos.length;
-      carouselImg.style.opacity = '0';
-      setTimeout(() => {
-        carouselImg.src = photos[photoIndex].src;
-        carouselCaption.innerText = photos[photoIndex].caption;
-        carouselImg.style.opacity = '1';
-      }, 300);
-    }, 3500);
-
-    // Audio Player
+    // MUSIC PLAYER
     const music = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicToggleBtn');
-    const musicIcon = document.getElementById('musicIcon');
     let isPlaying = false;
 
     musicBtn.addEventListener('click', () => {
       if (!isPlaying) {
         music.play();
-        musicIcon.setAttribute('data-lucide', 'volume-2');
         isPlaying = true;
       } else {
         music.pause();
-        musicIcon.setAttribute('data-lucide', 'volume-x');
         isPlaying = false;
       }
-      lucide.createIcons();
     });
 
-    // Mouse Glow
-    const cursorGlow = document.getElementById('cursor-glow');
-    document.addEventListener('mousemove', (e) => {
-      cursorGlow.style.left = e.clientX + 'px';
-      cursorGlow.style.top = e.clientY + 'px';
-    });
+    // MONEY CALCULATOR
+    const calcBalance = document.getElementById('calcBalance');
+    const calcRisk = document.getElementById('calcRisk');
+    const calcSL = document.getElementById('calcSL');
+    const resLot = document.getElementById('resLot');
 
-    // Chart TV
+    function calculateRisk() {
+      const b = parseFloat(calcBalance.value) || 0;
+      const r = parseFloat(calcRisk.value) || 0;
+      const sl = parseFloat(calcSL.value) || 1;
+      const riskAmount = b * (r / 100);
+      const lot = riskAmount / (sl * 10);
+      resLot.innerText = lot.toFixed(2) + ' Lot';
+    }
+    [calcBalance, calcRisk, calcSL].forEach(el => el.addEventListener('input', calculateRisk));
+
+    // JOURNAL ADD
+    function addJournal() {
+      const pair = document.getElementById('jPair').value || 'XAUUSD';
+      const type = document.getElementById('jType').value;
+      const res = document.getElementById('jResult').value || 'BEP';
+
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-white/5';
+      tr.innerHTML = `<td class="py-2 px-3 font-bold">${pair}</td><td class="py-2 px-3 ${type==='BUY'?'text-brand-green':'text-brand-red'}">${type}</td><td class="py-2 px-3">${res}</td>`;
+      document.getElementById('journalBody').appendChild(tr);
+    }
+
+    // TRADINGVIEW CHART
     function loadChart(symbol) {
       document.getElementById('tradingview_embed').innerHTML = '';
       new TradingView.widget({
@@ -455,7 +526,7 @@
         "container_id": "tradingview_embed"
       });
     }
-    function changeChartSymbol(symbol) { loadChart(symbol); }
+    function changeChartSymbol(s) { loadChart(s); }
     loadChart('OANDA:XAUUSD');
   </script>
 </body>
